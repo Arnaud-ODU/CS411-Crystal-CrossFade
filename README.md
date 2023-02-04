@@ -12,3 +12,6 @@ This is the CS410 Crystal CrossFade Site
 |Selai Naim           | <snaim001@odu.edu> |
 
 CS410-Crystal-CrossFade Team Site
+
+- [Presentations] (./presentations.html)
+- [About Us](./about_us.html)
