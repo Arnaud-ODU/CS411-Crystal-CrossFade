@@ -13,5 +13,5 @@ This is the CS410 Crystal CrossFade Site
 
 CS410-Crystal-CrossFade Team Site
 
-- [Presentations] (./presentations.html)
+- [Presentations](./presentations.html)
 - [About Us](./about_us.html)
