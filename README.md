@@ -1,3 +1,6 @@
+| [Presentations](./presentations.html)|[About Us](./about_us.html)           |
+|-----------------:--------------------|-----------------:--------------------|
+
 # CS410 Crystal CrossFade Site
 
 This is the CS410 Crystal CrossFade Site
