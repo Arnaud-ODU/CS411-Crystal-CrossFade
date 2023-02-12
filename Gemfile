@@ -1,1 +1,4 @@
-gem 'github-pages', '170', group: :jekyll_plugins
+source "https://rubygems.org"
+
+gem "github-pages", group: :jekyll_plugins
+gem "jekyll-include-cache", group: :jekyll_plugins
