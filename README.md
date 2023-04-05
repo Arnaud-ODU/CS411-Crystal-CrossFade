@@ -50,6 +50,8 @@
       }
       /* Page content styles */
       .content {
+        display: flex;
+        justify-content: center;
         margin-left: 20px;
         padding: 20px;
         box-sizing: border-box;
