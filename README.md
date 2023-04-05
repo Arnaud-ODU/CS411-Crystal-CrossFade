@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
   <head>
     <title>Home</title>
@@ -32,6 +31,12 @@
         font-size: 12px;
         color: #FFFFFF;
       }
+      h4 {
+        font-family: 'Helvetica', sans-serif;
+        font-weight: normal;
+        font-size: 18px;
+        color: #FFFFFF;
+      }
       /* Sidebar styles */
       .sidebar {
         position: fixed;
@@ -62,7 +67,12 @@
       </ul>
     </div>
     <div class="content">
-      <h1>Home Page</h1>
+      <h4>  Welcome to our musical note transcription program! This software has been designed to identify and transcribe musical   notes played by various instruments into sheet music. <br><br>
+        With this program, you can easily convert any musical performance into a written musical notation, making it easier for you to analyze, edit, and share your musical creations. <br><br>
+        Our software uses advanced algorithms to recognize and identify individual notes from a wide range of instruments, including pianos, guitars, flutes, and many others. It can also differentiate between different octaves and note durations to produce accurate and detailed sheet music. <br><br>
+        Whether you are a musician looking to transcribe your own compositions or a music teacher looking to transcribe performances for your students, our program is the perfect solution. So why wait? Start transcribing your musical creations with our software today!
+
+</h4>
     </div>
    
 
