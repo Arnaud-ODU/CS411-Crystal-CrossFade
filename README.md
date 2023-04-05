@@ -59,13 +59,13 @@
     </style>
   </head>
   <body>
-<div class="sidebar">
-      <h2>CrossFade</h2>
-      <ul>
-        <li><h3><a href="https://arnaud-odu.github.io/CS410-Crystal-CrossFade/">Home</a></h3></li>
-        <li><h3><a href="https://arnaud-odu.github.io/CS410-Crystal-CrossFade/presentations.html">Presentations</a></h3></li>
-        <li><h3><a href="https://arnaud-odu.github.io/CS410-Crystal-CrossFade/about_us.html">About Us</a></h3></li>
-      </ul>
+    <div class="sidebar">
+        <h2>CrossFade</h2>
+        <ul>
+            <li><h3><a href="https://arnaud-odu.github.io/CS410-Crystal-CrossFade/">Home</a></h3></li>
+            <li><h3><a href="https://arnaud-odu.github.io/CS410-Crystal-CrossFade/presentations.html">Presentations</a></h3></li>
+            <li><h3><a href="https://arnaud-odu.github.io/CS410-Crystal-CrossFade/about_us.html">About Us</a></h3></li>
+        </ul>
     </div>
     <div class="content">
       <h4>  Welcome to our musical note transcription program! This software has been designed to identify and transcribe musical   notes played by various instruments into sheet music. <br><br>
@@ -74,5 +74,5 @@
         Whether you are a musician looking to transcribe your own compositions or a music teacher looking to transcribe performances for your students, our program is the perfect solution. So why wait? Start transcribing your musical creations with our software today!
         </h4>
     </div>
-  </body>
+    </body>
 </html>
