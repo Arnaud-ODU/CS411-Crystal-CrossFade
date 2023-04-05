@@ -35,7 +35,7 @@
         font-family: 'Helvetica', sans-serif;
         font-weight: normal;
         font-size: 18px;
-        color: #FFFFFF;
+        color: #000000;
       }
       /* Sidebar styles */
       .sidebar {
