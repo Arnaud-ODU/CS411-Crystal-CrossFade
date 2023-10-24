@@ -6,6 +6,7 @@
 |Virginia Vano Ruano  | <vvano001@odu.edu> |
 |Joey Wassel          | <jwass002@odu.edu> |
 |Selai Naim           | <snaim001@odu.edu> |
+|Mohamed Abdullahi    | <mabdu012@odu.edu> |
 
 CS410-Crystal-CrossFade Team Site
 
