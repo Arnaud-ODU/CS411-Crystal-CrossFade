@@ -7,7 +7,15 @@ import music21  # A library for working with musicXML files
 def parse_musicxml(file_path):
     # Here we would use music21 or another library to parse the XML
     # and extract the features (e.g., notes, durations) and targets (corrected notes)
+    score = converter.parse(file_path)
+
+    #extract notes and their durations
+    notes_and_durations = []
+    for note in score.flat.notes:
+        notes_and_durations.append((note.pitch.midi, note.duration.quarterLength))
     
+    input_sequence = ...  # This would be derived from 'notes_and_durations'
+    target_sequence = ...  # This would be the correct sequence
     # This is a placeholder
     return input_sequence, target_sequence
 
