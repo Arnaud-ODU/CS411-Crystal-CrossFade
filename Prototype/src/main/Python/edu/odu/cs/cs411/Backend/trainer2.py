@@ -12,7 +12,9 @@ def parse_musicxml(file_path):
     #extract notes and their durations
     notes_and_durations = []
     for note in score.flat.notes:
-        notes_and_durations.append((note.pitch.midi, note.duration.quarterLength))
+        #step is note in Letter, octave - pitch is higher/lower on staff
+        notes_and_durations.append((note.step, note.octave ,note.duration.quarterLength))
+        #notes_and_durations.append((note.pitch.midi, note.duration.quarterLength))
     
     input_sequence = ...  # This would be derived from 'notes_and_durations'
     target_sequence = ...  # This would be the correct sequence
