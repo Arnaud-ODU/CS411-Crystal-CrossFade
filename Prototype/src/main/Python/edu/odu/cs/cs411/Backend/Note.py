@@ -40,9 +40,9 @@ class Note(object):
        
     #__eq__ Operator (==)
     def __eq__(self, rhs):
-        if (self.name == rhs.name
-            self.pitch == rhs.pitch
-            self.duration == rhs.duration
+        if (self.name == rhs.name and
+            self.pitch == rhs.pitch and
+            self.duration == rhs.duration and
             self.amplitude == rhs.amplitude):
             return True
         return False
