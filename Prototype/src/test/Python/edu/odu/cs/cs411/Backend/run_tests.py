@@ -5,10 +5,12 @@
 
 from test_Note import *
 from test_Track import *
+from test_Song import *
 
 def test_All():
     test_Note()
     test_Track()
+    test_Song()
 
 
 def main():
