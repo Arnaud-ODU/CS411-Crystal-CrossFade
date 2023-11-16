@@ -14,24 +14,24 @@ class Note(object):
     
     #Default Constructor
     def __init__(self):
-        self.name = ""
+        self.name = ''
         self.pitch = -1
         self.duration = -1
         self.amplitude = -1
         
     #Non-Default Constructor    
-    def __init__(self, name, pitch, duration, amplitude):
-        self.name = name
-        self.pitch = pitch
-        self.duration = duration
-        self.amplitude = amplitude
-        
+    #def __init__(self, name, pitch, duration, amplitude):
+    #    self.name = name
+    #    self.pitch = pitch
+    #    self.duration = duration
+    #    self.amplitude = amplitude
+    
     #Copy Constructor
-    def __init__(self, rhs):
-        self.name = rhs.name
-        self.pitch = rhs.pitch 
-        self.duration = rhs.duration
-        self.amplitude = rhs.amplitude
+    #def __init__(self, rhs):
+    #    self.name = rhs.name
+    #    self.pitch = rhs.pitch 
+    #    self.duration = rhs.duration
+    #    self.amplitude = rhs.amplitude
         
     #Print Value
     def __str__(self):
@@ -46,6 +46,14 @@ class Note(object):
             self.amplitude == rhs.amplitude):
             return True
         return False
+        
+    
+    #Sets The Note Name
+    def SetVars(self, name, pitch, duration, amplitude):
+        self.name = name
+        self.pitch = pitch
+        self.duration = duration
+        self.amplitude = amplitude
     
                
     
