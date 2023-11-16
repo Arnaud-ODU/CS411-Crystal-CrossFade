@@ -13,7 +13,7 @@
 #CS 411W Prof. Kennedy
 
 
-import Note
+from Note import *
 
 
 class Track(object):
