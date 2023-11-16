@@ -20,21 +20,21 @@ class Track(object):
     
     #Default Constructor
     def __init__(self):
-        self.instrument = ""
+        self.instrument = ''
         self.notes = []
         self.clefs = []
         
     #Non-Default Constructor    
-    def __init__(self, instrument, notes, clefs):
-        self.instrument = instrument
-        self.notes = notes
-        self.clefs = clefs
+    #def __init__(self, instrument, notes, clefs):
+    #    self.instrument = instrument
+    #    self.notes = notes
+    #    self.clefs = clefs
         
     #Copy Constructor
-    def __init__(self, rhs):
-        self.instrument = rhs.instrument
-        self.notes = rhs.notes
-        self.clefs = rhs.clefs
+    #def __init__(self, rhs):
+    #    self.instrument = rhs.instrument
+    #    self.notes = rhs.notes
+    #    self.clefs = rhs.clefs
         
     #Print Value
     def __str__(self):
@@ -59,8 +59,11 @@ class Track(object):
             return True
         return False
     
-               
-    
+    #Sets The Vars For The Track
+    def SetVars(self, instrument, notes, clefs):
+        self.instrument = instrument
+        self.notes = notes
+        self.clefs = clefs
         
         
     
