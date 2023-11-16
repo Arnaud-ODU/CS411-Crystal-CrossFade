@@ -4,9 +4,11 @@
 #CS 411W Prof. Kennedy
 
 from test_Note import *
+from test_Track import *
 
 def test_All():
     test_Note()
+    test_Track()
 
 
 def main():
