@@ -39,7 +39,7 @@ class Editor:
 
         # Main Menu tab in Editor
         self.notebook.bind("<Button-1>", self.on_tab_click)  # Bind left mouse click to the tab
-        
+
     def on_tab_click(self, event):
         # Check if the click is on the "Main Menu" tab
         current_tab = self.notebook.tk.call(self.notebook._w, "identify", "tab", event.x, event.y)
@@ -47,3 +47,9 @@ class Editor:
             # If so, go back to the main menu
             self.master.destroy()
             self.main_menu_callback()
+
+    def on_import_button_click(self):
+        file_path = filedialog.askopenfilename(title="Select a file to import")
+        if file_path:
+            # Update the label or perform other actions as needed
+            print("Imported file:", file_path)
