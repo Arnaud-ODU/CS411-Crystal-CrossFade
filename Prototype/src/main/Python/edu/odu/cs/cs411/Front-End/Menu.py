@@ -75,3 +75,13 @@ def open_editor_window():
     global editor_window
     editor_window = tk.Toplevel(root)
     editor = Editor(editor_window, go_to_main_menu)
+
+# Create the main window
+root = tk.Tk()
+root.title("CrossFade Main Menu")
+
+# Create widgets
+label = tk.Label(root, text="Options")
+settings_button = tk.Button(root, text="Settings", command=open_editor_window)
+profile_button = tk.Button(root, text="Profile", command=open_editor_window)
+editor_button = tk.Button(root, text="Editor", command=open_editor_window)  # Added Editor button
