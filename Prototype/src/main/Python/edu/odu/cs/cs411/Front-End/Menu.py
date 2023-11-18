@@ -85,3 +85,12 @@ label = tk.Label(root, text="Options")
 settings_button = tk.Button(root, text="Settings", command=open_editor_window)
 profile_button = tk.Button(root, text="Profile", command=open_editor_window)
 editor_button = tk.Button(root, text="Editor", command=open_editor_window)  # Added Editor button
+
+# Organize widgets using grid layout
+label.grid(row=0, column=0, padx=10, pady=10, columnspan=3)  # Increased columnspan to accommodate the Editor button
+settings_button.grid(row=1, column=0, padx=10, pady=10)
+profile_button.grid(row=1, column=1, padx=10, pady=10)
+editor_button.grid(row=1, column=2, padx=10, pady=10)  # Placed the Editor button in the third column
+
+# Start the main event loop
+root.mainloop()
