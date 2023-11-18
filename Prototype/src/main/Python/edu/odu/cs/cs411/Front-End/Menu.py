@@ -19,7 +19,7 @@ class Editor:
         self.notebook.add(self.main_menu_frame, text="Main Menu")
         self.notebook.add(self.profile_frame, text="Profile")
         self.notebook.add(self.settings_frame, text="Settings")
-        self.notebook.add(self.settings_frame, text="Tutorial")
+        #self.notebook.add(self.settings_frame, text="Tutorial")
 
         self.notebook.pack(fill=tk.BOTH, expand=True)
 
