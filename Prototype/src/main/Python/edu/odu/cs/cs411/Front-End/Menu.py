@@ -65,3 +65,13 @@ class Editor:
     def on_settings_button_click(self):
         # Add your settings logic here
         print("Settings clicked")
+
+# Callback function to go back to the main menu
+def go_to_main_menu():
+    root.deiconify()  # Show the main menu window
+
+# Function to open the editor window
+def open_editor_window():
+    global editor_window
+    editor_window = tk.Toplevel(root)
+    editor = Editor(editor_window, go_to_main_menu)
