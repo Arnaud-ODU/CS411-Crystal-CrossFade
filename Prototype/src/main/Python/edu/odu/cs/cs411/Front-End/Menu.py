@@ -53,3 +53,15 @@ class Editor:
         if file_path:
             # Update the label or perform other actions as needed
             print("Imported file:", file_path)
+
+    def open_last_project(self):
+        # Add logic to open the last project
+        print("Opening last project...")
+
+    def on_profile_button_click(self):
+        # Add your profile logic here
+        print("Profile clicked")
+
+    def on_settings_button_click(self):
+        # Add your settings logic here
+        print("Settings clicked")
