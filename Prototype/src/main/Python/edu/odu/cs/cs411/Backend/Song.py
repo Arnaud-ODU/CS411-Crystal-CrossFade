@@ -34,8 +34,8 @@ class Song(object):
         
     def export_musicxml(self, Save_As)
         """Given A Path To Save The File To, Exports Data As A MusicXML File"""
-        parsed_music.write("musicxml", Save_As)
+        self.parsed_music.write("musicxml", Save_As)
         
     def export_midi(self, Save_As):
         """Given A Path To Save The File To, Exports Data As A MIDI File"""
-        parsed_music.write("midi", Save_As)
+        self.parsed_music.write("midi", Save_As)
