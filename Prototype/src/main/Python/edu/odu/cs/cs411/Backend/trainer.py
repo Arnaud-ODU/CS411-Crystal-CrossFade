@@ -4,13 +4,24 @@ from torch.utils.data import Dataset, DataLoader
 from music21 import *
 import os
 
-processed_notesData = []
-def process_musicXMLData(musicscore):
+scorenote = []
+def process_musicXMLData(file_path):
+    score = converter.parse(file_path)
+    # Extract relevant information from the parsed MusicXML file
+    # Return the necessary data (e.g., notes, durations, etc.)
+    scorenote = []
+    for note in score.flatten().notes:
+       #Check if note is a note or chord(A collection of 3 notes or more being played at the same time)
+        if (note.isNote):
+             scorestring = str(note.measureNumber)+ ", "+ str(note.pitch) + ", " + str(note.duration.type) + ", " + str(note.duration.quarterLength)+", " +str(note.beams);
+             scorenote.append(scorestring)
     
-    
-    
-    
-    return processed_notesData
+        if (note.isChord):
+            for x in note._notes:
+             scorestring = str(x.measureNumber)+ ", "+ str(x.pitch) + ", " + str(x.duration.type) + ", " + str(x.duration.quarterLength)+", " +str(x.beams);
+             scorenote.append(scorestring)
+
+    return scorenote
 
 class MusicXMLDataset(Dataset):
     def __init__(self, root_dir):
