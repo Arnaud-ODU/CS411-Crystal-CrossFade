@@ -5,30 +5,33 @@
 #In Music A Track Is Typically The Part Of A Single Instrument
 #
 #A Song Has:
-#  A Track(s) (The Part Of A Single Instrument)
-#  A Key(s) (The Rule For The Notation Used For Displaying Notes)
-#  A Tempo(s) (The Speed At Which The Notes Are Played)
-#  A Time Signature(s) (The Ruling For How The Notation Interacts With The Tempo)
+#  A MusicXML file path (path)
+#  A music21.stream (parsed_work) score For Storing Parsed Data
 #
 #@author Joseph Wassell
 #CS 411W Prof. Kennedy
 
 
-from Track import *
+from music21 import *
 
 
 class Song(object):
     
-    #Default Constructor
-    def __init__(self):
-        self.tracks = []
-        self.keys = []
-        self.tempos = []
-        self.time_signatures = []
+    
+    def __init__(self, path='Invalid_Path'):
+        """Default Constructor"""
+        if path not in 'Invalid_Path':
+            self.path = path
+            self.parsed_music = converter.parse(path)
+        else:
+            self.parsed_music = None
+            
+            
+    def import_musicxml(self, file_path):
+        """Given A MusicXML File Path Initializes Song Data"""
+        self.path = file_path
+        self.parsed_music = converter.parse(file_path)
         
-    #Sets The Vars For The Song
-    def SetVars(self, tracks, keys, tempos, time_signatures):
-        self.tracks = tracks
-        self.keys = keys
-        self.tempos = tempos
-        self.time_signatures = time_signatures
+    def export_musicxml(self, Save_As)
+        """Given A Path To Save The File To, Exports Data As A MusicXML"""
+        
