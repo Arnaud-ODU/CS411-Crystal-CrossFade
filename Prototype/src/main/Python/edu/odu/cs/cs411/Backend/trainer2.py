@@ -1,37 +1,66 @@
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
-import music21  # A library for working with musicXML files
+import os
+from music21 import converter, beam
 
-# Assume we have a function that parses musicXML files and returns input and target sequences
+def encode_beam(beam):
+    if beam == '1beam':
+        return 1
+    elif beam == '2beam':
+        return 2
+    elif beam == '3/partial/left':
+        return 3
+    else:
+        return 0  # Default case, for unknown or no beam
+
+def parse_beams(beam_data):
+    beam_list = []
+    for b in beam_data.beamsList:
+        if b.type == 'start':
+            beam_list.append(1)
+        elif b.type == 'continue':
+            beam_list.append(2)
+        elif b.type == 'stop':
+            beam_list.append(3)
+        else:  # For partial or unknown types
+            beam_list.append(0)
+    return beam_list
+
 def parse_musicxml(file_path):
-    # Here we would use music21 or another library to parse the XML
-    # and extract the features (e.g., notes, durations) and targets (corrected notes)
+    # Parsing musicXML file to extract features
     score = converter.parse(file_path)
+    input_sequence = []
+    target_sequence = []
 
-    #extract notes and their durations
-    notes_and_durations = []
     for note in score.flat.notes:
-        #step is note in Letter, octave - pitch is higher/lower on staff
-        notes_and_durations.append((note.step, note.octave ,note.duration.quarterLength))
-        #notes_and_durations.append((note.pitch.midi, note.duration.quarterLength))
-    
-    input_sequence = ...  # This would be derived from 'notes_and_durations'
-    target_sequence = ...  # This would be the correct sequence
-    # This is a placeholder
-    return input_sequence, target_sequence
+        # Extract note features
+        note_features = [
+            note.pitch.midi,  # MIDI number for pitch
+            note.duration.quarterLength
+        ]
+        note_features.extend(parse_beams(note.beams))
+        input_sequence.append(note_features)
 
-# Define a custom dataset
+        current_beam_sequence = parse_beams(note.beams)
+        current_target_sequence = [encode_beam(b) for b in current_beam_sequence]
+        target_sequence.append(current_target_sequence)
+
+        # Convert lists to PyTorch tensors
+    input_tensor = torch.tensor(input_sequence, dtype=torch.float32)
+    target_tensor = torch.tensor(target_sequence, dtype=torch.long)
+    return input_tensor, target_tensor
+
 class MusicXMLDataset(Dataset):
     def __init__(self, data_folder):
         self.file_paths = [os.path.join(data_folder, file) for file in os.listdir(data_folder)]
-        self.data = [parse_musicxml(path) for path in self.file_paths]
 
     def __len__(self):
-        return len(self.data)
+        return len(self.file_paths)
 
     def __getitem__(self, idx):
-        return self.data[idx]
+        file_path = self.file_paths[idx]
+        return parse_musicxml(file_path)
 
 # Define a simple RNN model
 class RNNModel(nn.Module):
@@ -45,10 +74,10 @@ class RNNModel(nn.Module):
         out = self.fc(out[:, -1, :])  # We're interested in the last output for this sequence
         return out
 
-# Hyperparameters
-input_size = ...   # depends on the representation of music notes
-hidden_size = 64  # can be varied
-output_size = ...  # depends on the number of possible outputs
+# Define the model parameters
+input_size = 6  # 3 for note attributes + 3 for beam encoding
+hidden_size = 64
+output_size = 10 
 num_layers = 1
 learning_rate = 1e-3
 batch_size = 16
@@ -66,7 +95,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 # Train the model
 for epoch in range(num_epochs):
     for i, (inputs, labels) in enumerate(dataloader):
-        # Forward pass
+        # Ensure data is in the correct format for the model
         outputs = model(inputs)
         loss = criterion(outputs, labels)
         
@@ -79,6 +108,6 @@ for epoch in range(num_epochs):
             print(f'Epoch [{epoch+1}/{num_epochs}], Step [{i+1}/{len(dataloader)}], Loss: {loss.item()}')
 
 # Save the model
-torch.save(model.state_dict(), 'music_note_model.ckpt')
+torch.save(model, 'music_note_model.pth')
 
 print('Training complete')
