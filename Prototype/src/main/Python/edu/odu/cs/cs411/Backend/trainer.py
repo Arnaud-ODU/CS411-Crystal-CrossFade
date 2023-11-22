@@ -23,6 +23,7 @@ def process_musicXMLData(file_path):
 
     return scorenote
 
+
 class MusicXMLDataset(Dataset):
     def __init__(self, root_dir):
         self.root_dir = root_dir
@@ -37,8 +38,56 @@ class MusicXMLDataset(Dataset):
         processed_notesData = process_musicXMLData(score)
         return processed_notesData
 
-root_directory = ""
-batch_size = 32
 
-dataset = MusicXMLDataset(root_directory)
-dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+
+
+data_directory = "Data"
+batch_size = 64
+
+
+
+class RNNModel(nn.Module):
+    def __init__(self, input_size, hidden_size, num_layers, output_size):
+        super(RNNModel, self).__init__()
+        self.hidden_size = hidden_size
+        self.num_layers = num_layers
+        self.rnn = nn.RNN(input_size, hidden_size, num_layers, batch_first=True)
+        self.fc = nn.Linear(hidden_size, output_size)
+
+    def forward(self, x):
+        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(x.device)
+        out, _ = self.rnn(x, h0)
+        out = self.fc(out[:, -1, :])  # Consider only the last output in the sequence
+        return out
+
+# Define the model parameters
+input_size = 3  # Number of features
+hidden_size = 64
+num_layers = 2
+output_size = 1  # Example output size (adjust based on task)
+
+train_dataset = MusicXMLDataset(data_directory)
+train_dataLoader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+
+model = RNNModel(input_size, hidden_size, num_layers, output_size)
+
+criterion = nn.MSELoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+
+num_epochs = 10
+for epoch in range(num_epochs):
+    for data in train_dataLoader:
+        optimizer.zero_grad()
+        inputs = data  # Assuming no separate labels, input and output are the same
+        outputs = model(inputs)
+        loss = criterion(outputs, inputs)  # Example loss calculation (input=output in this case)
+        loss.backward()
+        optimizer.step()
+        
+        if (data+1) % 100 == 0:
+            print(f'Epoch [{epoch+1}/{num_epochs}], Step [{i+1}/{len(train_dataLoader)}], Loss: {loss.item()}')
+
+# Save the model
+torch.save(model.state_dict(), 'music_note_model.ckpt')
+
+print('Training complete')
