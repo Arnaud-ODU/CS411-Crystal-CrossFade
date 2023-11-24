@@ -84,7 +84,7 @@ batch_size = 16
 num_epochs = 100
 
 # Load wer dataset
-dataset = MusicXMLDataset(data_folder='Data')
+dataset = MusicXMLDataset(data_folder='Control_Tests')
 dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
 # Initialize the model
