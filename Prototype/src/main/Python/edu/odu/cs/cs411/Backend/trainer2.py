@@ -15,16 +15,16 @@ def encode_beam(beam):
         return 0  # Default case, for unknown or no beam
 
 def parse_beams(beam_data):
-    beam_list = []
+    beam_list = [0,0,0,0]
     for b in beam_data.beamsList:
         if b.type == 'start':
-            beam_list.append(1)
+            beam_list = [1,0,0,0]
         elif b.type == 'continue':
-            beam_list.append(2)
+            beam_list = [0,2,0,0]
         elif b.type == 'stop':
-            beam_list.append(3)
+            beam_list = [0,0,3]
         else:  # For partial or unknown types
-            beam_list.append(0)
+            beam_list.append(4)
     return beam_list
 
 def parse_musicxml(file_path):
