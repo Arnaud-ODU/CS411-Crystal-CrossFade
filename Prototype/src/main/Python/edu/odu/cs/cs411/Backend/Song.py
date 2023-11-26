@@ -13,6 +13,7 @@
 
 
 from music21 import *
+import copy
 
 
 class Song(object):
@@ -32,10 +33,26 @@ class Song(object):
         self.path = file_path
         self.parsed_music = converter.parse(file_path)
         
-    def export_musicxml(self, Save_As)
+    def export_musicxml(self, Save_As):
         """Given A Path To Save The File To, Exports Data As A MusicXML File"""
-        parsed_music.write("musicxml", Save_As)
+        self.parsed_music.write("musicxml", Save_As)
         
     def export_midi(self, Save_As):
         """Given A Path To Save The File To, Exports Data As A MIDI File"""
-        parsed_music.write("midi", Save_As)
+        self.parsed_music.write("midi", Save_As)
+        
+    def change_note_pitch(self, part, measure, note, new_value):
+        """Change a note in the parsed music
+
+        Args:
+            part (_int_): The number of the part where the note is located, where the first part would be 1
+            measure (_int_): The number of the measure where the note is located
+            note (_int_): The number of the note. If there are 5 notes, and the 3rd one must be change, this number would be 3
+            new_value (_int_, _string_): The new value that the note needs to have
+        """
+        p = pitch.Pitch(new_value)
+        offset = self.parsed_music.parts[part-1].measure(measure).notes[note-1].offset
+        n = copy.deepcopy(self.parsed_music.parts[part-1].measure(measure).notesAndRests[note-1])
+        n.pitch = p
+        self.parsed_music.parts[part-1].measure(measure).remove(self.parsed_music.parts[part-1].measure(measure).notes[note-1])
+        self.parsed_music.parts[part-1].measure(measure).insert(offset, n)
