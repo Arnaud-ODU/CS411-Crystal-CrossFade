@@ -9,7 +9,7 @@ from music21 import *
 import os
 from torch.utils.data import Dataset, DataLoader
 
-
+"""""
 def encode_beam(beam):
     if beam == '1beam':
         return 1
@@ -19,7 +19,7 @@ def encode_beam(beam):
         return 3
     else:
         return 0  # Default case, for unknown or no beam
-
+"""""
 def parse_beams(beam_data):
     beam_list = [0,0,0,0]
     for b in beam_data.beamsList:
@@ -54,8 +54,8 @@ def parse_musicxml(file_path):
         note_features.extend(parse_beams(note.beams))
         input_sequence.append(note_features)
 
-        current_beam_sequence = parse_beams(note.beams)
-        current_target_sequence = [encode_beam(b) for b in current_beam_sequence]
+        #current_beam_sequence = parse_beams(note.beams)
+        current_target_sequence = [parse_beams(note.beams)]
         target_sequence.append(current_target_sequence)
 
         # Convert lists to PyTorch tensors
