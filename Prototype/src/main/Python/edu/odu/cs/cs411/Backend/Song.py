@@ -47,7 +47,7 @@ class Song(object):
         Args:
             part (_int_): The number of the part where the note is located, where the first part would be 1
             measure (_int_): The number of the measure where the note is located
-            note (_int_): The number of the note. If there are 5 notes, and the 3rd one must be change, this number would be 3
+            note (_int_): The number of the note. If there are 5 notes, and the 3rd one must be changed, this number would be 3
             new_value (_int_, _string_): The new value that the note needs to have
         """
         p = pitch.Pitch(new_value)
@@ -56,3 +56,24 @@ class Song(object):
         n.pitch = p
         self.parsed_music.parts[part-1].measure(measure).remove(self.parsed_music.parts[part-1].measure(measure).notes[note-1])
         self.parsed_music.parts[part-1].measure(measure).insert(offset, n)
+        
+    def increase_pitch_by_semitone(self, part, measure, note):
+        """Increases the pitch of a note by a semitone given the part, measure and position inside the measure of a note.
+
+        Args:
+            part (_int_): The number of the part where the note is located, where the first part would be 1
+            measure (_int_): The number of the measure where the note is located
+            note (_int_): The number of the note. If there are 5 notes, and the 3rd one must be changed, this number would be 3
+        """
+        self.parsed_music.parts[part-1].measure(measure).notes[note-1].transpose(1, inPlace=True)
+        
+    def decrease_pitch_by_semitone(self, part, measure, note):
+        """Decreases the pitch of a note by a semitone given the part, measure and position inside the measure of a note.
+
+        Args:
+            part (_int_): The number of the part where the note is located, where the first part would be 1
+            measure (_int_): The number of the measure where the note is located
+            note (_int_): The number of the note. If there are 5 notes, and the 3rd one must be changed, this number would be 3
+        """
+        self.parsed_music.parts[part-1].measure(measure).notes[note-1].transpose(-1, inPlace=True)
+          
