@@ -1,10 +1,19 @@
-from Prototype.src.main.Python.edu.odu.cs.cs411.Backend.Song import *
+
+import os
+import sys
+
+p = os.path.abspath('../../../../../../../main/Python/edu/odu/cs/cs411/Backend/')
+if p not in sys.path:
+    sys.path.append(p)
+
+from Song import *
 from music21 import *
 import unittest
-import os
 
 #'Prototype\src\main\Python\edu\odu\cs\cs411\Backend\Data\score.xml'
-path = os.path.join("Prototype", "src", "main", "Python", "edu", "odu", "cs", "cs411", "Backend", "Data", "score.xml")
+
+    
+path = os.path.abspath('../../../../../../../main/Python/edu/odu/cs/cs411/Backend/Data/score.xml')
 
 class Test_Song_Modifiers(unittest.TestCase):
     
