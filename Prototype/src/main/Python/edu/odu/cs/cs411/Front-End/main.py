@@ -1,24 +1,125 @@
+# Import necessary modules
 from tkinter import *
 from customtkinter import *
-from PIL import Image
+from PIL import Image, ImageTk
 from configparser import ConfigParser
 import os
+import music21 as m21
 
+us = m21.environment.UserSettings()
+us_path = us.getSettingsPath()
+if not os.path.exists(us_path):
+    us.create()
+us['musescoreDirectPNGPath'] = r'C:\Program Files\MuseScore 4\bin\MuseScore4.exe'
+us['musicxmlPath'] = r'C:\Program Files\MuseScore 4\bin\MuseScore4.exe'
+
+import sys
+
+# Add paths to the system for custom modules
+sys.path.append('Prototype/src/main/Python/edu/odu/cs/cs411')
+sys.path.append('Prototype/src/main/Python/edu/odu/cs/cs411/Backend')
+
+# Import a module from the custom paths
+from Backend.parseMusicXML import parsemusic_XML
+
+# Define the main application class
 class App(CTk):
 
+    # Constructor for the application
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+        # Initialize various variables and settings
         self.var_view_signatures = IntVar(value=1)
         self.var_view_dynamics = IntVar(value=1)
         self.var_view_duration = IntVar(value=1)
+        self.var_view_key = IntVar(value=1)
+        self.var_view_transpose = IntVar(value=1)
         self.configurator = ConfigParser()
         self.title('CrossFade Main Menu')
+
+        # Set up menu, time signatures, and keys
         self.add_menu()
         self.time_signatures = (
             '2/4',
             '3/4',
             '4/4'
         )
+        self.minor_keys = (
+            'A#',
+            'D#',
+            'G#',
+            'C#',
+            'F#',
+            'B',
+            'E',
+            'A',
+            'D',
+            'G',
+            'C',
+            'F',
+            'Bb',
+            'Eb',
+            'Ab'
+        )
+        self.major_keys = (
+            'C#',
+            'F#',
+            'B',
+            'E',
+            'A',
+            'D',
+            'G',
+            'C',
+            'F',
+            'Bb',
+            'Eb',
+            'Ab',
+            'Db',
+            'Gb',
+            'Cb'
+        )
+        self.d_major = {
+            'C#': ('C', 'D'),
+            'F#': ('F', 'G'),
+            'B': ('Bb', 'C'),
+            'E': ('Eb', 'F'),
+            'A': ('Ab', 'Bb'),
+            'D': ('Db', 'Eb'),
+            'G': ('Gb', 'Ab'),
+            'C': ('B', 'Db'),
+            'F': ('E', 'F#'),
+            'Bb': ('A', 'B'),
+            'Eb': ('D', 'E'),
+            'Ab': ('G', 'A'),
+            'Db': ('C', 'D'),
+            'Gb': ('F#', 'G'),
+            'Cb': ('B', 'C')
+        }
+        self.d_minor = {
+            'A#': ('A', 'B'),
+            'D#': ('D', 'E'),
+            'G#': ('G', 'A'),
+            'C#': ('C', 'D'),
+            'F#': ('F', 'G'),
+            'B': ('Bb', 'C'),
+            'E': ('Eb', 'F'),
+            'A': ('G#', 'Bb'),
+            'D': ('C#', 'D#'),
+            'G': ('F#', 'G#'),
+            'C': ('B', 'C#'),
+            'F': ('E', 'F#'),
+            'Bb': ('A', 'B'),
+            'Eb': ('D', 'E'),
+            'Ab': ('G', 'A')
+        }
+        self.var_time_signatures = StringVar()
+        self.var_keys = StringVar()
+        self.var_mode_keys = StringVar(value='minor')
+        self.var_transpose = StringVar()
+        self.var_transpose_mode = StringVar(value='minor')
+
+        # Set up images for buttons
         self.img_wholenote = CTkImage(
             light_image=Image.open("Images/wholenote.png"),
             size=(30, 30)
@@ -67,6 +168,8 @@ class App(CTk):
             light_image=Image.open("Images/comment.png"),
             size=(30, 30)
         )
+
+        # Add settings, read configuration, and set up toolbar and timeline
         self.add_settings()
         self.read_config()
         self.add_toolbar()
@@ -76,7 +179,7 @@ class App(CTk):
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=3)
 
-
+    # Method to add the toolbar
     def add_toolbar(self):
         self.frame_toolbar = CTkFrame(self)
         self.frame_toolbar.grid_columnconfigure((0,1,2,3,4,5), weight=1)
@@ -166,7 +269,7 @@ class App(CTk):
             sticky='EW'
         )
 
-
+    # Method to add the timeline
     def add_timeline(self):
         self.frame_timeline = CTkFrame(self)
         self.frame_timeline.grid(
@@ -176,8 +279,25 @@ class App(CTk):
             padx=(0,10),
             sticky='NSEW',
         )
+        self.canvas_timeline = Canvas(
+            self.frame_timeline,
+            scrollregion=(0,0,500,500)
+        )
+        self.canvas_scrollbar=CTkScrollbar(
+            self.frame_timeline,
+            orientation='vertical', 
+            command=self.canvas_timeline.yview
+        )
+        self.canvas_scrollbar.pack(side=RIGHT,fill=Y)
+        self.canvas_timeline.config(yscrollcommand=self.canvas_scrollbar.set)
+        self.canvas_timeline.pack(
+            side=LEFT,expand=True,fill=BOTH
+        )
+        self.canvas_frame=Canvas(self.canvas_timeline)
+        self.canvas_frame.bind("<Configure>",lambda e: self.canvas_timeline.configure(scrollregion=self.canvas_timeline.bbox("all")))
+        self.canvas_timeline.create_window((0, 0), window=self.canvas_frame, anchor="nw")
 
-
+    # Method to read configuration from a file
     def read_config(self):
         if os.path.exists('config.ini'):
             self.configurator.read('config.ini')
@@ -191,6 +311,12 @@ class App(CTk):
             self.var_view_duration.set(self.configurator['view']['duration'])
             if not self.var_view_duration.get():
                 self.frame_notes.grid_forget()
+            self.var_view_key.set(self.configurator['view']['key'])
+            if not self.var_view_key.get():
+                self.frame_key.grid_forget()
+            self.var_view_transpose.set(self.configurator['view']['transpose'])
+            if not self.var_view_transpose.get():
+                self.frame_transpose.grid_forget()
         else:
             self.configurator['view'] = {
                 'theme': 'dark',
@@ -199,7 +325,7 @@ class App(CTk):
                 'duration': 1
             }
  
- 
+    # Method to add various settings
     def add_settings(self):
         self.frame_settings = CTkFrame(self)
         self.frame_settings.grid(
@@ -233,7 +359,6 @@ class App(CTk):
             padx=5,
             pady=5
         )
-        self.var_time_signatures = StringVar()
         CTkOptionMenu(
             self.frame_signatures,
             values=self.time_signatures,
@@ -441,20 +566,222 @@ class App(CTk):
             column=5,
             pady=10
         )
+        self.frame_key = CTkFrame(
+            self.frame_settings,
+        )
+        self.frame_key.grid(
+            row=4,
+            column=0,
+            sticky='NEW',
+            padx=10,
+            pady=10
+        )
+        self.frame_key.grid_columnconfigure((0,1), weight=1)
+        CTkLabel(
+            self.frame_key, 
+            text='Change key', 
+            font=('Helvetica', 18, 'bold')
+        ).grid(
+            row=0,
+            column=0,
+            columnspan=2,
+            sticky='NEW',
+            padx=5,
+            pady=(5,0)
+        )
+        CTkLabel(
+            self.frame_key, 
+            text='(without moving the notes)', 
+            font=('Helvetica', 12),
+            text_color='grey'
+        ).grid(
+            row=1,
+            column=0,
+            columnspan=2,
+            sticky='NEW',
+            padx=5,
+            pady=(0,5)
+        )
+        self.dropdown_keys = CTkOptionMenu(
+            self.frame_key,
+            values=self.minor_keys,
+            command=self.keys_clicked,
+            variable=self.var_keys
+        )
+        self.dropdown_keys.grid(
+            row=2,
+            column=0,
+            padx=5,
+            pady=10
+        )
+        self.dropdown_keys_mode = CTkOptionMenu(
+            self.frame_key,
+            values=('minor', 'major'),
+            command=self.keys_mode_clicked,
+            variable=self.var_mode_keys
+        )
+        self.dropdown_keys_mode.grid(
+            row=2,
+            column=1,
+            padx=5,
+            pady=10
+        )
+        self.frame_transpose = CTkFrame(
+            self.frame_settings,
+        )
+        self.frame_transpose.grid(
+            row=5,
+            column=0,
+            sticky='NEW',
+            padx=10,
+            pady=10
+        )
+        self.frame_transpose.grid_columnconfigure((0,1,2), weight=1)
+        CTkLabel(
+            self.frame_transpose, 
+            text='Transpose', 
+            font=('Helvetica', 18, 'bold')
+        ).grid(
+            row=0,
+            column=0,
+            columnspan=3,
+            sticky='NEW',
+            padx=5,
+            pady=(5,0)
+        )
+        CTkLabel(
+            self.frame_transpose, 
+            text='(change key and move the notes)', 
+            font=('Helvetica', 12),
+            text_color='grey'
+        ).grid(
+            row=1,
+            column=0,
+            columnspan=3,
+            sticky='NEW',
+            padx=5,
+            pady=(0,5)
+        )
+        self.dropdown_transpose = CTkOptionMenu(
+            self.frame_transpose,
+            values=self.minor_keys,
+            command=self.transpose_clicked,
+            variable=self.var_transpose
+        )
+        self.dropdown_transpose.grid(
+            row=2,
+            column=0,
+            padx=5,
+            pady=10
+        )
+        self.dropdown_transpose_mode = CTkOptionMenu(
+            self.frame_transpose,
+            values=('minor', 'major'),
+            command=self.transpose_mode_clicked,
+            variable=self.var_transpose_mode
+        )
+        self.dropdown_transpose_mode.grid(
+            row=2,
+            column=1,
+            padx=5,
+            pady=10
+        )
+        self.frame_transpose_buttons = CTkFrame(
+            self.frame_transpose,
+        )
+        self.frame_transpose_buttons.grid(
+            row=2,
+            column=2,
+            padx=5,
+            pady=10
+        )
+        CTkButton(
+            self.frame_transpose_buttons,
+            text='▲',
+            font=('Helvetica', 25),
+            width=0,
+            command=self.increment_transpose
+        ).grid(
+            row=0,
+            column=0
+        )
+        CTkButton(
+            self.frame_transpose_buttons,
+            text='▼',
+            font=('Helvetica', 25),
+            width=0,
+            command=self.decrement_transpose
+        ).grid(
+            row=1,
+            column=0
+        )
+  
+    # Methods to handle increment and decrement of transpose
+    def increment_transpose(self):
+        if not self.var_transpose.get():
+            return
+        if self.var_transpose_mode.get() == 'minor':
+            self.var_transpose.set(
+                self.d_minor[self.var_transpose.get()][1]
+            )
+        elif self.var_transpose_mode.get() == 'major':
+            self.var_transpose.set(
+                self.d_major[self.var_transpose.get()][1]
+            )
 
+    def decrement_transpose(self):
+        if not self.var_transpose.get():
+            return
+        if self.var_transpose_mode.get() == 'minor':
+            self.var_transpose.set(
+                self.d_minor[self.var_transpose.get()][0]
+            )
+        elif self.var_transpose_mode.get() == 'major':
+            self.var_transpose.set(
+                self.d_major[self.var_transpose.get()][0]
+            )
 
+    # Placeholder method for slider dynamics moved
     def slider_dynamics_moved(self):
         pass
 
-
+    # methods for various dropdown menus
     def time_signature_clicked(self, choice):
         pass
 
+    def transpose_mode_clicked(self, choice):
+        if choice == 'minor':
+            self.dropdown_transpose.configure(
+                values=self.minor_keys
+            )
+        elif choice == 'major':
+            self.dropdown_transpose.configure(
+                values=self.major_keys
+            )
+        self.var_transpose.set('')
+    
+    def transpose_clicked(self, choice):
+        pass
 
+    def keys_clicked(self, choice):
+        pass
+
+    def keys_mode_clicked(self, choice):
+        if choice == 'minor':
+            self.dropdown_keys.configure(
+                values=self.minor_keys
+            )
+        elif choice == 'major':
+            self.dropdown_keys.configure(
+                values=self.major_keys
+            )
+        self.var_keys.set('')
+
+    # Method to maximize the window
     def maximize(self):
         self.state("zoomed")
         
-
+    # Method to add the menu
     def add_menu(self):
         self.menu_bar = Menu(self)
         self.menu_file = Menu(self.menu_bar, tearoff=0)
@@ -514,6 +841,16 @@ class App(CTk):
             variable=self.var_view_duration,
             command=self.view_duration
         )
+        self.menu_view.add_checkbutton(
+            label="Change key",
+            variable=self.var_view_key,
+            command=self.view_key
+        )
+        self.menu_view.add_checkbutton(
+            label="Transpose",
+            variable=self.var_view_transpose,
+            command=self.view_transpose
+        )
         self.menu_view.add_separator()
         self.menu_view.add_cascade(
             label="Theme",
@@ -521,6 +858,38 @@ class App(CTk):
         )
         self.config(menu=self.menu_bar)
 
+    # Methods to handle visibility of various frames
+    def view_transpose(self):
+        if self.frame_transpose.winfo_ismapped():
+            self.frame_transpose.grid_forget()
+            self.configurator['view']['transpose'] = "0"
+        else:
+            self.frame_transpose.grid(
+                row=5,
+                column=0,
+                sticky='NEW',
+                padx=10,
+                pady=10
+            )
+            self.configurator['view']['transpose'] = "1"
+        with open('config.ini', 'w') as configfile:
+            self.configurator.write(configfile)
+
+    def view_key(self):
+        if self.frame_key.winfo_ismapped():
+            self.frame_key.grid_forget()
+            self.configurator['view']['key'] = "0"
+        else:
+            self.frame_key.grid(
+                row=4,
+                column=0,
+                sticky='NEW',
+                padx=10,
+                pady=10
+            )
+            self.configurator['view']['key'] = "1"
+        with open('config.ini', 'w') as configfile:
+            self.configurator.write(configfile)
 
     def view_duration(self):
         if self.frame_notes.winfo_ismapped():
@@ -570,31 +939,46 @@ class App(CTk):
         with open('config.ini', 'w') as configfile:
             self.configurator.write(configfile)
 
+    # Method to change the appearance mode (light or dark)
     def change_mode(self, mode):
         set_appearance_mode(mode)
         self.configurator['view']['theme'] = mode
         with open('config.ini', 'w') as configfile:
             self.configurator.write(configfile)
 
-
+    # Methods to handle file imports
     def import_audio(self):
         self.audio_path = filedialog.askopenfilename(filetypes=[("Audio Files", "*.mp3;*.wav")])
         if self.audio_path:
             print(f"Selected audio file: {self.audio_path}")
-
     
     def import_midi(self):
         self.midi_path = filedialog.askopenfilename(filetypes=[("MIDI Files", "*.mid;*.midi")])
         if self.midi_path:
             print(f"Selected MIDI file: {self.midi_path}")
 
-    
     def import_musicxml(self):
         self.musicxml_path = filedialog.askopenfilename(filetypes=[("MusicXML Files", "*.mxl")])
         if self.musicxml_path:
-            print(f"Selected MusicXML file: {self.musicxml_path}")
+            score = m21.converter.parse(self.musicxml_path)
 
+            # Save it as a PNG image
+            img_path = score.write('musicxml.png', fp='Images/output.png')
+            img = Image.open(img_path)
+            img.thumbnail(
+                (
+                    self.frame_timeline.winfo_width(), 
+                    10e99
+                ), Image.ANTIALIAS
+            )
+            self.img_timeline = ImageTk.PhotoImage(img)
+            Label(self.canvas_frame, image=self.img_timeline).pack()
+            #self.canvas_frame.create_image(0, 0, image = self.img_timeline, anchor = NW, tags="timeline_image")
+            #self.canvas_frame.bind("<Configure>",lambda e: self.canvas_timeline.configure(scrollregion=self.canvas_timeline.bbox("all")))
+            #self.canvas_timeline.create_window((0, 0), window=self.canvas_frame, anchor="nw")
+            #self.canvas_timeline.configure(height=self.img_timeline.height())
 
+# Main entry point
 if __name__ == '__main__':
     app = App()
     app.mainloop()
