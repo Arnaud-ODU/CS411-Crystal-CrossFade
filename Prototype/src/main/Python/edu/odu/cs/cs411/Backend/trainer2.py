@@ -1,32 +1,9 @@
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
-import os
-from music21 import converter, beam
+import music21  # A library for working with musicXML files
 
-def encode_beam(beam):
-    if beam == '1beam':
-        return 1
-    elif beam == '2beam':
-        return 2
-    elif beam == '3/partial/left':
-        return 3
-    else:
-        return 0  # Default case, for unknown or no beam
-
-def parse_beams(beam_data):
-    beam_list = [0,0,0,0]
-    for b in beam_data.beamsList:
-        if b.type == 'start':
-            beam_list = [1,0,0,0]
-        elif b.type == 'continue':
-            beam_list = [0,2,0,0]
-        elif b.type == 'stop':
-            beam_list = [0,0,3]
-        else:  # For partial or unknown types
-            beam_list.append(4)
-    return beam_list
-
+# Assume we have a function that parses musicXML files and returns input and target sequences
 def parse_musicxml(file_path):
     # Parsing musicXML file to extract features
     score = converter.parse(file_path)
