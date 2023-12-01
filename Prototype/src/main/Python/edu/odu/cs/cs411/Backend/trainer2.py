@@ -1,9 +1,9 @@
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
-import music21  # A library for working with musicXML files
+import music21  # A library for working with MusicXML files
 
-# Assume we have a function that parses musicXML files and returns input and target sequences
+# Assume we have a function that parses MusicXML files and returns input and target sequences
 def parse_musicxml(file_path):
     # Here we would use music21 or another library to parse the XML
     # and extract the features (e.g., notes, durations) and targets (corrected notes)
