@@ -76,4 +76,114 @@ class Song(object):
             note (_int_): The number of the note. If there are 5 notes, and the 3rd one must be changed, this number would be 3
         """
         self.parsed_music.parts[part-1].measure(measure).notes[note-1].transpose(-1, inPlace=True)
-          
+
+    #WIP
+    #def add_starting_beam(self, part, measure, note):
+        """Adds the starting beams required for the provided note
+
+        Args:
+            part (_int_): The number of the part where the note is located, where the first part would be 1
+            measure (_int_): The number of the measure where the note is located
+            note (_int_): The number of the note. If there are 5 notes, and the 3rd one must be changed, this number would be 3
+        """
+        #noteType = self.parsed_music.parts[part-1].measure(measure).notes[note-1].duration.type
+        #self.parsed_music.parts[part-1].measure(measure).notes[note-1].beams.fill(noteType, type = 'start')
+
+    #WIP
+    #def add_middle_beam(self, part, measure, note, prevType, nextType):
+        """Adds the middle beams required for the provided note
+
+        Args:
+            part (_int_): The number of the part where the note is located, where the first part would be 1
+            measure (_int_): The number of the measure where the note is located
+            note (_int_): The number of the note. If there are 5 notes, and the 3rd one must be changed, this number would be 3
+            prevType (_str_): The type of the previous note (eighth, 16th, 32nd...)
+            nextType (_str_): The type of the next note (eighth, 16th, 32nd...)
+        """
+        
+        #n = self.parsed_music.parts[part-1].measure(measure).notes[note-1]
+        
+        # Removes beams in case there are any already placed
+        #n.beams.beamList = []
+        
+        #noteType = n.duration.type
+        
+        #if prevType == noteType and nextType == noteType:            
+        #    n.beams.fill(noteType, type = 'continue')
+            
+        #noteType = self.number_of_beams(noteType)
+        #prevType = self.number_of_beams(prevType)
+        #nextType = self.number_of_beams(nextType)
+        
+        #if prevType < noteType:
+        #    for x in range(prevType):
+        #        n.beams.append('continue')
+        #    for x in range(noteType-prevType):
+        #        n.beams.append('start')
+                
+        #if prevType > noteType:
+        #    for x in range(prevType):
+        #        n.beams.append('continue')
+        #    for x in range(noteType-prevType):
+        #        n.beams.append('stop')
+
+    #WIP
+    #def add_end_beam(self, part, measure, note):
+        """Adds the final beams required for the provided note
+
+        Args:
+            part (_int_): The number of the part where the note is located, where the first part would be 1
+            measure (_int_): The number of the measure where the note is located
+            note (_int_): The number of the note. If there are 5 notes, and the 3rd one must be changed, this number would be 3
+        """
+        #noteType = self.parsed_music.parts[part-1].measure(measure).notes[note-1].duration.type
+        #self.parsed_music.parts[part-1].measure(measure).notes[note-1].beams.fill(noteType, type = 'stop')
+
+    def add_beams(self, part, measure, note, start, middle, end):
+        """Adds the specified number of beams of each type to a note. This function does not work for partial beams
+
+        Args:
+            part (_int_): The number of the part where the note is located, where the first part would be 1
+            measure (_int_): The number of the measure where the note is located
+            note (_int_): The number of the note. If there are 5 notes, and the 3rd one must be changed, this number would be 3
+            start (_int_): The number of beams of type 'start' that have to be added
+            middle (_int_): The number of beams of type 'continue' that have to be added
+            end (_int_): The number of beams of type 'stop' that have to be added
+        """
+        n =  self.parsed_music.parts[part-1].measure(measure).notes[note-1]
+        
+        if middle > 0:
+            for i in range(middle):
+                n.beams.append('continue')
+            
+        if start > 0:
+            for i in range(start):
+                n.beams.append('start')
+                
+        if end > 0:
+            for i in range(end):
+                n.beams.append('stop')
+                
+    #def add_beams_between_notes(self, part, measure, notes):
+        """Given a list of notes, it inserts simple beams between notes. It does not include partial beams.
+
+        Args:
+            part (_int_): The number of the part where the note is located, where the first part would be 1
+            measure (_int_): The number of the measure where the note is located
+            notes (_list of int_): A list with the numbers of the notes. To connect the first 4 notes in a measure, this list would contain the numbers 1, 2, 3 and 4
+        """
+        
+        #self.add_starting_beam(part, measure, notes[0])
+        
+    #def number_of_beams(self, noteType):
+        #if noteType == 'eighth' or noteType == '8th':
+        #    return 2
+        
+        #if noteType == '16th':
+        #    return 3
+        
+        #if noteType == '32nd':
+        #    return 4
+
+        
+            
