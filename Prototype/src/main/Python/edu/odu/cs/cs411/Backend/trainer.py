@@ -91,17 +91,34 @@ class RNNModel(nn.Module):
        out = self.linear(unpacked[:, -1, :])
        return out
 
+# Model Paramaters
 input_size =  7 # 7 Features(Measure Number,Pitch.midi, note duration in int, [Beam Start, Beam Continue, Beam Stop, Beam Partial(Left/Right)])
-hidden_size = 64
-output_size = 4 
-batch_size = 120
-num_epochs = 100
-model = RNNModel(input_size, hidden_size, output_size)
-music_dataset = MusicXMLDataset(parse_musicxml('Control_Tests'))
-dataloader = DataLoader(music_dataset, batch_size=batch_size, shuffle=True)
-criterion = nn.MSELoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001)
+hidden_size = 6 # Hidden State Size, Hidden state of each time step of vector length 6(2/3 size of input + outputsize)
+output_size = 1 # 1 for Regression, N for Classifications
+batch_size = 16 # Large batch size leads to fast to training but lower accuracy. Should be 16,32,64,128
+num_epochs = 10 # Number of times all training data is used once to update parameters. Should be between 1-10
 
+# Paths to the training and testing folders
+train_folder_path = "~/CS411-Crystal-Crossfade/Prototype/src/main/Python/edu/odu/cs/cs411/Backend/Correct_Beams" # path to mxl files containing correct beams format
+test_folder_path = "~/CS411-Crystal-Crossfade/Prototype/src/main/Python/edu/odu/cs/cs411/Backend/Incorrect_Beams" # path to mxl files containing incorrect beams format
+
+# Instantiate the model and define loss function and optimizer
+model = RNNModel(input_size, hidden_size, output_size) # Recurrent Neural Network to use sequential data and patterns to predict the most likely scenario
+criterion = nn.MSELoss() # Mean-Square Error Loss, best for regression. Outputs number P ∈[0,1]
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001) # Best default optimizer,default learning rate is 0.001, best results 0.002-0.003. If facing overfitting adjust learning rate.
+
+# Create instances of the custom dataset
+train_dataset = MusicXMLDataset(train_folder_path)  
+test_dataset = MusicXMLDataset(test_folder_path)
+
+# Create data loaders for training and testing
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
+
+#music_dataset = MusicXMLDataset(parse_musicxml('Control_Tests'))
+#dataloader = DataLoader(music_dataset, batch_size=batch_size, shuffle=True)
+
+"""""
 def train_model(model, data_loader):
     for epoch in range(num_epochs):
         for batch in data_loader:
@@ -120,7 +137,37 @@ def train_model(model, data_loader):
          if (batch+1) % 100 == 0:
             print(f'Epoch [{epoch+1}/{num_epochs}], Step [{batch+1}/{len(dataloader)}], Loss: {loss.item()}')
 
-train_model(model, dataloader)
-torch.save(model, 'music_note_model.pth')
+#train_model(model, dataloader)
+"""
+# Train model using training dataset
+def train_model(model, train_loader):
+    for epoch in range(num_epochs):
+        for data, labels in train_loader:
+            optimizer.zero_grad()
+            outputs = model(data)
+            loss = criterion(outputs, labels.view(-1, 1))
+            loss.backward()
+            optimizer.step()
 
+        print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item()}')
+
+torch.save(model, 'music_note_model.pth')
 print('Training complete')
+
+train_model(model,train_loader)
+
+# Test model using testing dataset, prints how accurate the model is in finding non-beams that should have beams.
+model.eval() # Turns off training and evaluates model
+with torch.no_grad():
+    correct_predictions = 0
+    total_samples = 0
+
+    for data, labels in test_loader:
+        outputs = model(data)
+        predicted_labels = (outputs >= 0.5).float()
+        correct_predictions += (predicted_labels == labels.view(-1, 1)).sum().item()
+        total_samples += labels.size(0)
+
+    accuracy = correct_predictions / total_samples
+    print(f'Test Accuracy: {accuracy}')
+model.train() # Turns training back on after evalutating
