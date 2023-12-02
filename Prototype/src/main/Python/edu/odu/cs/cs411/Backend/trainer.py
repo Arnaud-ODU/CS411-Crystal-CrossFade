@@ -20,17 +20,18 @@ def encode_beam(beam):
     else:
         return 0  # Default case, for unknown or no beam
 """""
+# Parse the beams to be in the format of [Start,Continue,Stop,Partial]
 def parse_beams(beam_data):
-    beam_list = [0,0,0,0]
+    beam_list = [0,0,0,0] # Initialize the beam list to 0 for all four dimensions
     for b in beam_data.beamsList:
-        if b.type == 'start':
-            beam_list = [1,0,0,0]
-        elif b.type == 'continue':
-            beam_list = [0,2,0,0]
-        elif b.type == 'stop':
-            beam_list = [0,0,3]
-        else:  # For partial or unknown types
-            beam_list.append(4)
+        if b.type == 'start': # If a beam contains a start set the value of index 0 to 1
+            beam_list[0] = 1
+        elif b.type == 'continue': # If a beam contains a continue set the value of index 1 to 2
+            beam_list[1] = 2
+        elif b.type == 'stop': # If a beam contains a stop set the value of index 2 to 3
+            beam_list[2] = 3
+        else:                   # If a beam contains a partial or backward/forward hook set the value of index 3 to 4
+            beam_list[3] = 4
     return beam_list
 
 def parse_musicxml(file_path):
