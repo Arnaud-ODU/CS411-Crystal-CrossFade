@@ -9,17 +9,7 @@ from music21 import *
 import os
 from torch.utils.data import Dataset, DataLoader
 
-"""""
-def encode_beam(beam):
-    if beam == '1beam':
-        return 1
-    elif beam == '2beam':
-        return 2
-    elif beam == '3/partial/left':
-        return 3
-    else:
-        return 0  # Default case, for unknown or no beam
-"""""
+
 # Parse the beams to be in the format of [Start,Continue,Stop,Partial]
 def parse_beams(beam_data):
     beam_list = [0,0,0,0] # Initialize the beam list to 0 for all four dimensions
@@ -32,39 +22,22 @@ def parse_beams(beam_data):
             beam_list[2] = 3
         else:                   # If a beam contains a partial or backward/forward hook set the value of index 3 to 4
             beam_list[3] = 4
-    return beam_list
+    return beam_list # Return value to be used in parse_musicxml
 
+# Parse the mxl/MusicXML file in the format of [Note/Chord measure number, Note/Chord pitch in integer format, Note/Chord duration, [Beam Info] ]
 def parse_musicxml(file_path):
     # Parsing musicXML file to extract features
-    score = converter.parse(file_path)
-    input_sequence = []
-    target_sequence = []
-    note_features = []
+    score = converter.parse(file_path) # Music21 toolkit to parse mxl/musicXML files
+    note_features = [] # Collection of all note for each note/chord
+   
     for note in score.flat.notes:
-        # Extract note features
-        if (note.isNote):
-             note_features = [note.measureNumber, note.pitch.midi, note.duration.quarterLength]
-    
-        if (note.isChord):
-            for x in note._notes:
-             note_features = [x.measureNumber, x.pitch.midi, x.duration.quarterLength]
-       # note_features = [
-        #    note.pitch.midi,  # MIDI number for pitch
-         #   note.duration.quarterLength
-        #]
+        # Extract features for each note or chord
+        note_features = [note.measureNumber, note.pitch.midi, note.duration.quarterLength] if note.isNote else [note.measureNumber, sum(p.midi for p in note.pitches) / len(note.pitches), note.duration.quarterLength]
+        # Add beam info to the note features for each note/chord
         note_features.extend(parse_beams(note.beams))
-        input_sequence.append(note_features)
-
-        #current_beam_sequence = parse_beams(note.beams)
-        current_target_sequence = [parse_beams(note.beams)]
-        target_sequence.append(current_target_sequence)
-
-        # Convert lists to PyTorch tensors
-    input_tensor = torch.tensor(input_sequence, dtype=torch.float32)
-    #print(input_tensor)
-    target_tensor = torch.tensor(target_sequence, dtype=torch.long)
-    #print(target_tensor)
-    return input_tensor, target_tensor
+        note_features.append(note_features)    
+    
+    return note_features # Return value to be used in Dataset class
 
 class MusicXMLDataset(Dataset):
     def __init__(self, data):
