@@ -8,7 +8,7 @@
 #  A MusicXML file path (path)
 #  A music21.stream (parsed_work) score For Storing Parsed Data
 #
-#@author Joseph Wassell
+#@author Joseph Wassell, Virginia Vano Rano
 #CS 411W Prof. Kennedy
 
 
@@ -186,4 +186,14 @@ class Song(object):
         #    return 4
 
         
-            
+    def mark_error(self, part, measure, note, error_number):
+        """Given A Specifc Note And An Error Number Marks The Note As An Error.
+        
+        Args:
+            part (_int_): The Number Of The Part Where The Note Is Located
+            measure (_int_): The Number Of The Measure Which Containes The Note
+            note (_int_): The Number Note That Should Be Marked As An Error
+            error_number (_int_): The Number Error That Was Found In The Song
+        """
+        n =  self.parsed_music.parts[part-1].measure(measure).notes[note-1]
+        n.lyric ="Error #" + str(error_number)

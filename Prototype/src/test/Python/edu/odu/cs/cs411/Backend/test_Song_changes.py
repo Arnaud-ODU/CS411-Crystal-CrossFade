@@ -46,6 +46,15 @@ class Test_Song_Modifiers(unittest.TestCase):
         self.assertEqual(len(score.parsed_music.parts[0].measure(3).notesAndRests[0].beams), 1)
         self.assertEqual(score.parsed_music.parts[0].measure(3).notesAndRests[0].beams.getTypeByNumber(1), 'start')
         
-           
+    def test_mark_error(self):
+        score = Song(path)
+        self.assertEqual(score.parsed_music.parts[0].measure(2).notesAndRests[1].step, 'B')
+        score.mark_error(1,2,2,1)
+        self.assertEqual(score.parsed_music.parts[0].measure(2).notesAndRests[1].lyric, "Error #1")
+        
+
+def test_song_changes():
+    unittest.main()
+
 unittest.main()
         

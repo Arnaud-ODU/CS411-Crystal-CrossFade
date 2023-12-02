@@ -6,11 +6,13 @@
 from test_Note import *
 from test_Track import *
 from test_Song import *
+from test_Song_changes import *
 
 def test_All():
-    test_Note()
-    test_Track()
-    test_Song()
+    #test_Note()
+    #test_Track()
+    #test_Song()
+    test_song_changes()
 
 
 def main():
