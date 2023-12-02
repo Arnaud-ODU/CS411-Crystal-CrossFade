@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, filedialog
+from musicxml import *
 
 class Editor:
     def __init__(self, master, main_menu_callback):
