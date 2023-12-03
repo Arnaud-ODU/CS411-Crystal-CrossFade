@@ -52,6 +52,12 @@ class Test_Song_Modifiers(unittest.TestCase):
         score.mark_error(1,2,2,1)
         self.assertEqual(score.parsed_music.parts[0].measure(2).notesAndRests[1].lyric, "Error #1")
         
+    def test_change_duration(self):
+        score = Song(path)
+        self.assertEqual(score.parsed_music.parts[0].measure(1).notesAndRests[0].duration.type, 'quarter')
+        score.change_duration(1, 1, 1, 'half', 0)
+        self.assertEqual(score.parsed_music.parts[0].measure(1).notesAndRests[0].duration.type, 'half')
+        
 
 def test_song_changes():
     unittest.main()

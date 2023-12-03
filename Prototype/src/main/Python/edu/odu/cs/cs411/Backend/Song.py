@@ -197,3 +197,16 @@ class Song(object):
         """
         n =  self.parsed_music.parts[part-1].measure(measure).notes[note-1]
         n.lyric ="Error #" + str(error_number)
+        
+    def change_duration(self, part, measure, note, neededDuration, neededDots):
+        """Changes the duration of the specified note.
+
+        Args:
+            part (_int_): The number of the part where the note is located, where the first part would be 1
+            measure (_int_): The number of the measure where the note is located
+            note (_int_): The number of the note. If there are 5 notes, and the 3rd one must be changed, this number would be 3
+            d (_str_): The type of note that represents the duration that the note needs to be. If the note has to be a half note, this would be 'half'
+            dots (_int_): The number of dots the note has
+        """
+        n = self.parsed_music.parts[part-1].measure(measure).notesAndRests[note-1]
+        n.duration = duration.Duration(type=neededDuration, dots=neededDots)
