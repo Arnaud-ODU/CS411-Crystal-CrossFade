@@ -70,7 +70,14 @@ class Test_Song_Modifiers(unittest.TestCase):
         self.assertEqual(score.parsed_music.parts[0].measure(1).notesAndRests[1].duration.type, 'half')
         self.assertEqual(score.parsed_music.parts[0].measure(1).notesAndRests[1].nameWithOctave, 'C4')
         self.assertEqual(score.parsed_music.parts[0].measure(1).notesAndRests[1].duration.dots, 0)
+      
+    def test_remove_note(self):
+        score = Song(path)
+        self.assertEqual(len(score.parsed_music.parts[0].measure(2).notesAndRests), 4)
+        score.remove_note(1, 2, 2)
+        self.assertEqual(len(score.parsed_music.parts[0].measure(2).notesAndRests), 3)
         
+            
             
 
 def test_song_changes():

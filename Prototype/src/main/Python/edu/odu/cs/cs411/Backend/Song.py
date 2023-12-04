@@ -225,3 +225,15 @@ class Song(object):
         
         n = note.Note(neededPitch, type=neededType, dots=neededDots)
         self.parsed_music.parts[part-1].measure(measure).insertAndShift(noteOffset-1, n)
+
+    def remove_note(self, part, measure, noteOffset):
+        """Removes the specified note from the measure
+
+        Args:
+            part (_int_): The number of the part where the note is located, where the first part would be 1
+            measure (_int_): The number of the measure where the note is located
+            noteOffset (_int_): The number of the note. If there are 5 notes, and the 3rd one must be changed, this number would be 3
+        """
+        n = self.parsed_music.parts[part-1].measure(measure).notes[noteOffset-1]
+        self.parsed_music.parts[part-1].measure(measure).remove(n, shiftOffsets = True)
+        
