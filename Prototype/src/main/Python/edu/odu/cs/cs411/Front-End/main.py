@@ -6,6 +6,7 @@ from configparser import ConfigParser
 import os
 import music21 as m21
 
+
 us = m21.environment.UserSettings()
 us_path = us.getSettingsPath()
 if not os.path.exists(us_path):
@@ -21,6 +22,7 @@ sys.path.append('Prototype/src/main/Python/edu/odu/cs/cs411/Backend')
 
 # Import a module from the custom paths
 from Backend.parseMusicXML import parsemusic_XML
+from Backend.Song import *
 
 # Define the main application class
 class App(CTk):
@@ -120,6 +122,7 @@ class App(CTk):
         self.var_transpose_mode = StringVar(value='minor')
 
         # Set up images for buttons
+        #Note Durations
         self.img_wholenote = CTkImage(
             light_image=Image.open("Images/wholenote.png"),
             size=(30, 30)
@@ -144,6 +147,8 @@ class App(CTk):
             light_image=Image.open("Images/thirtysecondnote.png"),
             size=(30, 30)
         )
+
+        #Top Of Player Task Bar
         self.img_play = CTkImage(
             light_image=Image.open("Images/play.png"),
             size=(30, 30)
@@ -178,6 +183,9 @@ class App(CTk):
         self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=3)
+
+        self.song = Song() #Default Song To Store Unit A Song Is Imported
+        self.imported = False #False Until A Song Has Been Imported
 
     # Method to add the toolbar
     def add_toolbar(self):
@@ -962,6 +970,9 @@ class App(CTk):
         if self.musicxml_path:
             score = m21.converter.parse(self.musicxml_path)
 
+            #Stores The Song After Importing
+            self.song.import_musicxml(self.musicxml_path)
+
             # Save it as a PNG image
             img_path = score.write('musicxml.png', fp='Images/output.png')
             img = Image.open(img_path)
@@ -969,7 +980,7 @@ class App(CTk):
                 (
                     self.frame_timeline.winfo_width(), 
                     10e99
-                ), Image.ANTIALIAS
+                ), Image.Resampling.LANCZOS
             )
             self.img_timeline = ImageTk.PhotoImage(img)
             Label(self.canvas_frame, image=self.img_timeline).pack()
@@ -977,6 +988,7 @@ class App(CTk):
             #self.canvas_frame.bind("<Configure>",lambda e: self.canvas_timeline.configure(scrollregion=self.canvas_timeline.bbox("all")))
             #self.canvas_timeline.create_window((0, 0), window=self.canvas_frame, anchor="nw")
             #self.canvas_timeline.configure(height=self.img_timeline.height())
+            self.imported = True
 
 # Main entry point
 if __name__ == '__main__':
