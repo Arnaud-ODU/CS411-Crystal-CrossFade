@@ -58,15 +58,19 @@ def open_editor_window():
     # Hide the main menu window
     root.iconify()
 
+    # Import the other script
+    from Main import App as OtherApp
+
     # Create a new Tk instance for the second window
     second_window = tk.Toplevel()
     second_window.title("Editor Window")
 
-    # Create the Editor instance
-    editor = Editor(second_window, lambda: go_to_main_menu(second_window))
+    # Create the App instance from the other script
+    editor = OtherApp(second_window)
 
     # Start the second window's event loop
     second_window.mainloop()
+
 
 # Create the main window
 root = tk.Tk()
