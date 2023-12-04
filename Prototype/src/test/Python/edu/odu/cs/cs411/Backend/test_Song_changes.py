@@ -58,6 +58,20 @@ class Test_Song_Modifiers(unittest.TestCase):
         score.change_duration(1, 1, 1, 'half', 0)
         self.assertEqual(score.parsed_music.parts[0].measure(1).notesAndRests[0].duration.type, 'half')
         
+    def test_add_note(self):
+        score = Song(path)
+        self.assertEqual(len(score.parsed_music.parts[0].measure(1).notesAndRests), 1)
+        score.add_note(1, 1, 2, 'half', 'C4', 0)
+        self.assertEqual(len(score.parsed_music.parts[0].measure(1).notesAndRests), 2)
+        
+        self.assertEqual(score.parsed_music.parts[0].measure(1).notesAndRests[0].duration.type, 'quarter')
+        self.assertEqual(score.parsed_music.parts[0].measure(1).notesAndRests[0].nameWithOctave, 'E4')
+        self.assertEqual(score.parsed_music.parts[0].measure(1).notesAndRests[0].duration.dots, 0)
+        self.assertEqual(score.parsed_music.parts[0].measure(1).notesAndRests[1].duration.type, 'half')
+        self.assertEqual(score.parsed_music.parts[0].measure(1).notesAndRests[1].nameWithOctave, 'C4')
+        self.assertEqual(score.parsed_music.parts[0].measure(1).notesAndRests[1].duration.dots, 0)
+        
+            
 
 def test_song_changes():
     unittest.main()
