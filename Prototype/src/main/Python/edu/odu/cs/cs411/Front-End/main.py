@@ -1,5 +1,6 @@
 # Import necessary modules
 from tkinter import *
+from tkinter.filedialog import asksaveasfile, askdirectory, asksaveasfilename
 from customtkinter import *
 from PIL import Image, ImageTk
 from configparser import ConfigParser
@@ -803,6 +804,7 @@ class App(CTk):
         self.menu_bar.add_cascade(label="Tools", menu=self.menu_tools)
         self.menu_bar.add_cascade(label="Help", menu=self.menu_help)
         self.submenu_theme = Menu(self.menu_view, tearoff=0)
+       
         self.submenu_import = Menu(self.menu_file, tearoff=0)
         self.submenu_import.add_command(
             label='Import Audio', 
@@ -816,12 +818,32 @@ class App(CTk):
             label='Import MusicXML', 
             command=self.import_musicxml
         )
-
         self.menu_file.add_cascade(
             label="Import File",
             menu=self.submenu_import
         )
+
+        self.submenu_export = Menu(self.menu_file, tearoff=0)
+        self.submenu_export.add_command(
+            label='Export Audio', 
+            command=self.export_audio
+        )
+        self.submenu_export.add_command(
+            label='Export MIDI',
+            command=self.export_midi
+        )
+        self.submenu_export.add_command(
+            label='Export MusicXML', 
+            command=self.export_musicxml
+        )
+        self.menu_file.add_cascade(
+            label="Export File",
+            menu=self.submenu_export
+        )
+
+        
         self.menu_file.add_separator()
+
         self.menu_file.add_command(
             label='Exit',
             command=self.destroy
@@ -959,14 +981,16 @@ class App(CTk):
         self.audio_path = filedialog.askopenfilename(filetypes=[("Audio Files", "*.mp3;*.wav")])
         if self.audio_path:
             print(f"Selected audio file: {self.audio_path}")
+            self.imported = True
     
     def import_midi(self):
         self.midi_path = filedialog.askopenfilename(filetypes=[("MIDI Files", "*.mid;*.midi")])
         if self.midi_path:
             print(f"Selected MIDI file: {self.midi_path}")
+            self.imported = True
 
     def import_musicxml(self):
-        self.musicxml_path = filedialog.askopenfilename(filetypes=[("MusicXML Files", "*.mxl")])
+        self.musicxml_path = filedialog.askopenfilename(filetypes=[("MusicXML Files", "*.mxl;*.musicxml")])
         if self.musicxml_path:
             
 
@@ -981,6 +1005,18 @@ class App(CTk):
             #self.canvas_timeline.create_window((0, 0), window=self.canvas_frame, anchor="nw")
             #self.canvas_timeline.configure(height=self.img_timeline.height())
             self.imported = True
+
+
+    def export_audio(self):
+        pass
+
+
+    def export_midi(self):
+        self.song.export_midi(asksaveasfilename(filetypes=[("MIDI Files", "*.midi")]))
+
+    def export_musicxml(self):
+        self.song.export_musicxml(asksaveasfilename(filetypes=[("MusicXML Files", "*.musicxml")]))
+
 
     def display(self):
         """Displays the Current Version Of The MusicXML File"""
