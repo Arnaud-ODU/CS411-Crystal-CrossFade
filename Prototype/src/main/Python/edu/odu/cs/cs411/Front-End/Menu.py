@@ -47,3 +47,29 @@ class Editor:
 
         self.settings_button = tk.Button(self.settings_frame, text="Settings Button", command=self.on_settings_button_click)
         self.settings_button.pack()
+
+        # Main Menu tab in Editor
+        self.notebook.bind("<Button-1>", self.on_tab_click)  # Bind left mouse click to the tab
+
+    def on_tab_click(self, event):
+        # Check if the click is on the "Main Menu" tab
+        current_tab = self.notebook.tk.call(self.notebook._w, "identify", "tab", event.x, event.y)
+        if "Main Menu" in current_tab:
+            # If so, go back to the main menu
+            self.master.destroy()
+            self.main_menu_callback()
+
+    def on_import_button_click(self):
+        file_path = filedialog.askopenfilename(title="Select a PDF file to import", filetypes=[("PDF files", "*.pdf")])
+        if file_path:
+            # Display the PDF file on the canvas
+            self.display_pdf(file_path)
+
+    def display_pdf(self, file_path):
+        try:
+            pdf_document = fitz.open(file_path)
+            for page_num in range(pdf_document.page_count):
+                page = pdf_document[page_num]
+                image = page.get_pixmap()
+                image = Image.frombytes("RGB", (image.width, image.height), image.samples)
+                photo = ImageTk.PhotoImage(image)
