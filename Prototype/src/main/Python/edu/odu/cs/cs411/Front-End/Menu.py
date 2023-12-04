@@ -83,7 +83,7 @@ label = tk.Label(root, text="Main Menu", font=("Arial", 14, "bold"), bg=black, f
 label.grid(row=1, column=1, pady=10)
 
 # Load and display a resized image on the Main Menu page
-image_path = r"C:\Users\hyaci\OneDrive\Pictures\CF.png"  # Use a raw string
+image_path = "CF.png"  # Use a raw string
 original_image = tk.PhotoImage(file=image_path)
 resized_image = original_image.subsample(2, 2)  # Adjust the subsample values for resizing
 image_label = tk.Label(root, image=resized_image, bg=black)
