@@ -995,8 +995,10 @@ class App(CTk):
             
 
             #Stores The Song After Importing
-            self.song.import_musicxml(self.musicxml_path)
-
+            if not self.imported:
+                self.song.import_musicxml(self.musicxml_path)
+            else:
+                self.song = Song(self.musicxml_path)
             self.display()
 
             
@@ -1012,10 +1014,12 @@ class App(CTk):
 
 
     def export_midi(self):
-        self.song.export_midi(asksaveasfilename(filetypes=[("MIDI Files", "*.midi")]))
+        if self.imported:
+            self.song.export_midi(asksaveasfilename(filetypes=[("MIDI Files", "*.midi")]))
 
     def export_musicxml(self):
-        self.song.export_musicxml(asksaveasfilename(filetypes=[("MusicXML Files", "*.musicxml")]))
+        if self.imported:
+            self.song.export_musicxml(asksaveasfilename(filetypes=[("MusicXML Files", "*.musicxml")]))
 
 
     def display(self):
