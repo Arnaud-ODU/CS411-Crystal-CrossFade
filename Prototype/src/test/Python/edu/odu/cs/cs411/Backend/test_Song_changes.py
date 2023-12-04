@@ -76,7 +76,18 @@ class Test_Song_Modifiers(unittest.TestCase):
         self.assertEqual(len(score.parsed_music.parts[0].measure(2).notesAndRests), 4)
         score.remove_note(1, 2, 2)
         self.assertEqual(len(score.parsed_music.parts[0].measure(2).notesAndRests), 3)
+    
+    def test_check_beats(self):
+        score = Song(path)
+        score.add_note(1, 1, 2, 'half', 'C4', 0)
+        self.assertEqual(score.check_beats_per_measure(1, 1), True)
+        score.add_note(1, 1, 3, 'quarter', 'F', 0)
+        self.assertEqual(score.check_beats_per_measure(1, 1), False)
         
+        score.add_note(1, 2, 3, 'quarter', 'F', 0)
+        self.assertEqual(score.check_beats_per_measure(1, 2), False)
+        
+            
             
             
 

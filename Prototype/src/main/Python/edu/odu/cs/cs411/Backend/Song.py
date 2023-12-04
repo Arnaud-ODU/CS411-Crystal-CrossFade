@@ -222,7 +222,7 @@ class Song(object):
             neededPitch (_str_): The pitch that the note needs to have
             neededDots (_int_): The number of dots the note needs to have
         """
-        
+
         n = note.Note(neededPitch, type=neededType, dots=neededDots)
         self.parsed_music.parts[part-1].measure(measure).insertAndShift(noteOffset-1, n)
 
@@ -236,4 +236,26 @@ class Song(object):
         """
         n = self.parsed_music.parts[part-1].measure(measure).notes[noteOffset-1]
         self.parsed_music.parts[part-1].measure(measure).remove(n, shiftOffsets = True)
+    
+    def check_beats_per_measure(self, part, measure):
+        """Checks ig the measure has to many or to few beats. if it is the first measure, it only checks if there are too many.
+
+        Args:
+            part (_int_): The number of the part where the note is located, where the first part would be 1
+            measure (_int_): The number of the measure where the note is located
+
+        Returns:
+            _bool_: Returns true if the amount of beats is correct. Else, it returns false
+        """
+        m = self.parsed_music.parts[part-1].measure(measure)
+        
+        duration = 0
+        for n in m.notesAndRests:
+            duration += n.duration.quarterLength
+        
+        if measure == 1:
+            return duration <= m.barDuration.quarterLength
+        
+        else:
+            return duration == m.barDuration.quarterLength
         
