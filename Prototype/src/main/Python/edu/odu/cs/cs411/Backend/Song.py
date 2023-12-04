@@ -197,3 +197,65 @@ class Song(object):
         """
         n =  self.parsed_music.parts[part-1].measure(measure).notes[note-1]
         n.lyric ="Error #" + str(error_number)
+        
+    def change_duration(self, part, measure, note, neededDuration, neededDots):
+        """Changes the duration of the specified note.
+
+        Args:
+            part (_int_): The number of the part where the note is located, where the first part would be 1
+            measure (_int_): The number of the measure where the note is located
+            note (_int_): The number of the note. If there are 5 notes, and the 3rd one must be changed, this number would be 3
+            neededDuration (_str_): The type of note that represents the duration that the note needs to be. If the note has to be a half note, this would be 'half'
+            neededDots (_int_): The number of dots the note has
+        """
+        n = self.parsed_music.parts[part-1].measure(measure).notesAndRests[note-1]
+        n.duration = duration.Duration(type=neededDuration, dots=neededDots)
+        
+    def add_note(self, part, measure, noteOffset, neededType, neededPitch, neededDots):
+        """Adds a note to the specified location. This does not work properly if added to the first location in a measure.
+
+        Args:
+            part (_int_): The number of the part where the note is located, where the first part would be 1
+            measure (_int_): The number of the measure where the note is located
+            noteOffset (_int_): The number of the note. If there are 5 notes, and the 3rd one must be changed, this number would be 3
+            neededType (_str_): The type of note that represents the duration that the note needs to be. If the note has to be a half note, this would be 'half'
+            neededPitch (_str_): The pitch that the note needs to have
+            neededDots (_int_): The number of dots the note needs to have
+        """
+
+        n = note.Note(neededPitch, type=neededType, dots=neededDots)
+        self.parsed_music.parts[part-1].measure(measure).insertAndShift(noteOffset-1, n)
+
+    def remove_note(self, part, measure, noteOffset):
+        """Removes the specified note from the measure
+
+        Args:
+            part (_int_): The number of the part where the note is located, where the first part would be 1
+            measure (_int_): The number of the measure where the note is located
+            noteOffset (_int_): The number of the note. If there are 5 notes, and the 3rd one must be changed, this number would be 3
+        """
+        n = self.parsed_music.parts[part-1].measure(measure).notes[noteOffset-1]
+        self.parsed_music.parts[part-1].measure(measure).remove(n, shiftOffsets = True)
+    
+    def check_beats_per_measure(self, part, measure):
+        """Checks ig the measure has to many or to few beats. if it is the first measure, it only checks if there are too many.
+
+        Args:
+            part (_int_): The number of the part where the note is located, where the first part would be 1
+            measure (_int_): The number of the measure where the note is located
+
+        Returns:
+            _bool_: Returns true if the amount of beats is correct. Else, it returns false
+        """
+        m = self.parsed_music.parts[part-1].measure(measure)
+        
+        duration = 0
+        for n in m.notesAndRests:
+            duration += n.duration.quarterLength
+        
+        if measure == 1:
+            return duration <= m.barDuration.quarterLength
+        
+        else:
+            return duration == m.barDuration.quarterLength
+        
