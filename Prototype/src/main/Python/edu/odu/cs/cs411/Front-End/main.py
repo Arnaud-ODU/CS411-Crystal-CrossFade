@@ -968,27 +968,36 @@ class App(CTk):
     def import_musicxml(self):
         self.musicxml_path = filedialog.askopenfilename(filetypes=[("MusicXML Files", "*.mxl")])
         if self.musicxml_path:
-            score = m21.converter.parse(self.musicxml_path)
+            
 
             #Stores The Song After Importing
             self.song.import_musicxml(self.musicxml_path)
 
-            # Save it as a PNG image
-            img_path = score.write('musicxml.png', fp='Images/output.png')
-            img = Image.open(img_path)
-            img.thumbnail(
-                (
-                    self.frame_timeline.winfo_width(), 
-                    10e99
-                ), Image.Resampling.LANCZOS
-            )
-            self.img_timeline = ImageTk.PhotoImage(img)
-            Label(self.canvas_frame, image=self.img_timeline).pack()
+            self.display()
+
+            
             #self.canvas_frame.create_image(0, 0, image = self.img_timeline, anchor = NW, tags="timeline_image")
             #self.canvas_frame.bind("<Configure>",lambda e: self.canvas_timeline.configure(scrollregion=self.canvas_timeline.bbox("all")))
             #self.canvas_timeline.create_window((0, 0), window=self.canvas_frame, anchor="nw")
             #self.canvas_timeline.configure(height=self.img_timeline.height())
             self.imported = True
+
+    def display(self):
+        """Displays the Current Version Of The MusicXML File"""
+        score = self.song.parsed_music
+        # Save it as a PNG image
+        img_path = score.write('musicxml.png', fp='Images/output.png')
+        img = Image.open(img_path)
+        img.thumbnail(
+            (
+                self.frame_timeline.winfo_width(), 
+                10e99
+            ), Image.Resampling.LANCZOS
+        )
+        self.img_timeline = ImageTk.PhotoImage(img)
+        Label(self.canvas_frame, image=self.img_timeline).pack()
+
+
 
 # Main entry point
 if __name__ == '__main__':
