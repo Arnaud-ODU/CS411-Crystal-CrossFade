@@ -32,7 +32,10 @@ def parse_musicxml(file_path):
    
     for note in score.flat.notes:
         # Extract features for each note or chord
-        note_features = [note.measureNumber, note.pitch.midi, note.duration.quarterLength] if note.isNote else [note.measureNumber, sum(p.midi for p in note.pitches) / len(note.pitches), note.duration.quarterLength]
+        if note.isNote: 
+         note_features = [note.measureNumber, note.offset, note.pitch.midi, note.duration.quarterLength] 
+        else: 
+         note_features = [note.measureNumber, note.offset, sum(p.midi for p in note.pitches) / len(note.pitches), note.duration.quarterLength]
         # Add beam info to the note features for each note/chord
         note_features.extend(parse_beams(note.beams))
         note_features.append(note_features)    
@@ -40,14 +43,32 @@ def parse_musicxml(file_path):
     return note_features # Return value to be used in Dataset class
 
 class MusicXMLDataset(Dataset):
-    def __init__(self, data):
-        self.data = data
+    def __init__(self, directory):
+        self.data = []
+        file_paths = [os.path.join(directory, file) for file in os.listdir(directory) if file.endswith(('.xml', '.mxl', '.musicxml'))]
+        for file in file_paths: # Access each file in folder to be parsed
+            parsed_data = parse_musicxml(file)
+            for b in parsed_data: # Turn the note features into tensors
+                self.data.append(torch.tensor([float(feature) for feature in b], dtype=torch.float32))
+        self.data = torch.stack(self.data)
 
-    def __len__(self):
+    def __len__(self): # Length of list of stacks
         return len(self.data)
 
     def __getitem__(self, idx):
-        return self.data[idx]
+        data_item = self.data[idx]
+        inputs = data_item[:4] # Use the first four as input [Measure Number, Note Offset, Note pitch, Note Duration]
+        # The Beam information will be used as labels for the note information. Labels will be 1 for beam and 0 for no beam.
+        if int(data_item[4] > 0):  # If Beam Start is 1, make label as 1.
+            label = torch.tensor(int(data_item[4] > 0), dtype=torch.float32)       
+        elif int(data_item[5] > 0): # If Beam Continue is 2, make label as 1.
+            label = torch.tensor(1, dtype=torch.float32)          
+        elif int(data_item[6] > 0): #If Beam Stop is 3, make label as 1
+             label = torch.tensor(1, dtype=torch.float32)
+        else:                       # Else make label as 0.
+            label = torch.tensor(0,dtype=torch.float32)
+        #print(inputs, label)                                 
+        return inputs, label
 
 #RNN Model for padding uneven sequence lengths for tensors    
 class RNNModel(nn.Module):
