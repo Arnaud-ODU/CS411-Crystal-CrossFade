@@ -73,3 +73,28 @@ class Editor:
                 image = page.get_pixmap()
                 image = Image.frombytes("RGB", (image.width, image.height), image.samples)
                 photo = ImageTk.PhotoImage(image)
+                self.canvas.create_image(0, 0, anchor=tk.NW, image=photo)
+                self.canvas.image = photo  # Keep a reference to the image to prevent it from being garbage collected
+
+            pdf_document.close()
+            self.canvas.config(scrollregion=self.canvas.bbox("all"))
+        except Exception as e:
+            print(f"Error displaying PDF file: {e}")
+
+    def open_last_project(self):
+        # Add logic to open the last project
+        print("Opening last project...")
+
+    def on_profile_button_click(self):
+        # Add your profile logic here
+        print("Profile clicked")
+
+    def on_settings_button_click(self):
+        # Add your settings logic here
+        print("Settings clicked")
+
+# Callback function to go back to the main menu
+def go_to_main_menu():
+    root.deiconify()  # Show the main menu window
+
+# Function to open the editor window
