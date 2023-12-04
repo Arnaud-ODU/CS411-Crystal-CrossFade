@@ -17,3 +17,11 @@ vscode/extensions.json
 
 # Read Me
 **/README.md
+*.vsidx
+/.vs/CS411-Crystal-CrossFade/v17/.wsuo
+/.vs/CS411-Crystal-CrossFade/v17/workspaceFileList.bin
+*.json
+/.vs/slnx.sqlite
+/.vs/CS411-Crystal-CrossFade/FileContentIndex/read.lock
+/Images/output-1.png
+*.musicxml
