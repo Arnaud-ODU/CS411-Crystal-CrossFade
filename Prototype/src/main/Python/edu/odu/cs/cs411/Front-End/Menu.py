@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, filedialog
+import os
+import music21 as m21
 
 # Define shades of black and blue
 black = "#000000"
