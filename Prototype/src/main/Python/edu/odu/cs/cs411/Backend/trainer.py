@@ -132,21 +132,27 @@ train_loader = DataLoader(train_dataset, batch_size, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size, shuffle=False)
 
 # Train model using training dataset
-def train_model(model, train_loader):
-    for epoch in range(num_epochs):
-        for data, labels in train_loader:
-            optimizer.zero_grad()
-            outputs = model(data)
-            loss = criterion(outputs, labels.view(-1, 1))
-            loss.backward()
-            optimizer.step()
-
-        print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item()}')
+def train_model(num_epochs):
+        model.train() # Start Training
+        for epoch in range(num_epochs): # For Loop of complete iteration of dataset
+            runningLoss = 0.0 # Loss in each epoch of batch
+            for inputs, labels in train_loader: # For Loop of batches of inputs and labels from the dataloader 
+                optimizer.zero_grad() # Set gradients of variables to 0.
+                outputs = model(inputs) # Predictions from inputs
+                loss = criterion(outputs, labels) # Loss between the outputs and labels.
+                loss.backward() # The gradient loss from what the model can learn
+                optimizer.step() # Update paramters with gradients from loss.backward()
+                runningLoss += loss.item() # Updates running loss value
+                #print("Output shape:", outputs.shape)  For debugging
+                #print("Labels shape:", labels.shape)  For debugging
+            # Once all batches have been iterated through then print each epoch loss.
+            epochLoss = runningLoss / len(train_loader.dataset) # Calculates the average loss of each epoch
+            print(f'Epoch {epoch+1}/{num_epochs}, Loss: {epochLoss:.4f}') # Print the Epoch Number and its loss.
 
 torch.save(model, 'music_note_model.pth')
 print('Training complete')
 
-train_model(model,train_loader)
+train_model(num_epochs)
 
 # Test model using testing dataset, prints how accurate the model is in finding non-beams that should have beams.
 model.eval() # Turns off training and evaluates model
