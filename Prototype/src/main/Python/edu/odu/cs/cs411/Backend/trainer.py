@@ -136,9 +136,9 @@ def train_model(num_epochs):
         model.train() # Start Training
         for epoch in range(num_epochs): # For Loop of complete iteration of dataset
             runningLoss = 0.0 # Loss in each epoch of batch
-            for inputs, labels in train_loader: # For Loop of batches of inputs and labels from the dataloader 
+            for inputs, labels in train_loader: # For Loop of batches of inputs and labels of the dataset from the dataloader 
                 optimizer.zero_grad() # Set gradients of variables to 0.
-                outputs = model(inputs) # Predictions from inputs
+                outputs = model(inputs) # Predictions from inputs. Raw Logit
                 loss = criterion(outputs, labels) # Loss between the outputs and labels.
                 loss.backward() # The gradient loss from what the model can learn
                 optimizer.step() # Update paramters with gradients from loss.backward()
@@ -154,18 +154,26 @@ print('Training complete')
 
 train_model(num_epochs)
 
-# Test model using testing dataset, prints how accurate the model is in finding non-beams that should have beams.
-model.eval() # Turns off training and evaluates model
-with torch.no_grad():
-    correct_predictions = 0
-    total_samples = 0
+# Test model using testing dataset, prints the predicted notes with its information that need beams.
+def evaluate_beam_predictions():
+        model.eval() # Turns off Training and starts Evaluation 
+        beam_predictions = [] # Collection of predicted notes information
+        with torch.no_grad(): # Since we are evaluating we do not need gradient calcs, so it gets turned off.
+            for inputs, labels in test_loader: # For Loop of batches of inputs and labels of the dataset from the dataloader#
+                outputs = model(inputs) # Predictions from inputs in the form of a raw Logit(log( p /(1 - p)))
+                predictedP = torch.sigmoid(outputs) # Converts the logits into a probability
+                # Classification using a threshold of 0.5, if the prob. is higher than the threshold that means its most likely 
+                # a beam and given 1, else 0 for no beam
+                predictedL = (predictedP > 0.5).float() 
 
-    for data, labels in test_loader:
-        outputs = model(data)
-        predicted_labels = (outputs >= 0.5).float()
-        correct_predictions += (predicted_labels == labels.view(-1, 1)).sum().item()
-        total_samples += labels.size(0)
-
-    accuracy = correct_predictions / total_samples
-    print(f'Test Accuracy: {accuracy}')
+                if predictedL.sum() > 0: # Check to see if there are any beam predictions by taking the sum of all label predictions in the batch
+                    for i in range(inputs.size(0)):
+                        inputData = inputs[i]
+                        measure, offset, pitch, duration = inputData[:4].tolist() # Collect first 4 elements
+                        beam_predictions.append((measure, offset, pitch, duration)) # Add collected notes data to the collecetion of predictions
+        for prediction in beam_predictions: # Iterate through the collection of predictions and print 
+                print(f"Measure: {prediction[0]}, Offset: {prediction[1]}, Pitch: {prediction[2]}, Duration: {prediction[3]} needs a beam.")
+        else: # If there are no predicted beams 
+            print("No Beams Have Been Predicted!")
+        return beam_predictions 
 model.train() # Turns training back on after evalutating
