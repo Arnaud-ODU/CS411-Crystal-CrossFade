@@ -107,28 +107,29 @@ class NBPModel(nn.Module):
         return out # Return the prediction to be used in the DataLoader and trainer/evalution
 
 # Model Paramaters
-input_size =  7 # 7 Features(Measure Number,Pitch.midi, note duration in int, [Beam Start, Beam Continue, Beam Stop, Beam Partial(Left/Right)])
-hidden_size = 6 # Hidden State Size, Hidden state of each time step of vector length 6(2/3 size of input + outputsize)
-output_size = 1 # 1 for Regression, N for Classifications
-batch_size = 16 # Large batch size leads to fast to training but lower accuracy. Should be 16,32,64,128
-num_epochs = 10 # Number of times all training data is used once to update parameters. Should be between 1-10
+input_size =  4 # 4 Features(Measure Number,note offset ,Pitch.midi, note duration in int)
+hidden_size = 3 # Hidden State Size, Hidden state of each time step of vector length 6(2/3 size of input + outputsize)
+batch_size = 32 # Large batch size leads to fast to training but lower accuracy. Should be 16,32,64,128
+num_epochs = 4 # Number of times all training data is used once to update parameters. Should be between 1-10
+num_layers = 2 # Stack of layers (i.e LSTM and Linear)
+learning_rate = 0.001 # Learning rate for optimizers to update paramaters
 
 # Paths to the training and testing folders
 train_folder_path = "~/CS411-Crystal-Crossfade/Prototype/src/main/Python/edu/odu/cs/cs411/Backend/Correct_Beams" # path to mxl files containing correct beams format
 test_folder_path = "~/CS411-Crystal-Crossfade/Prototype/src/main/Python/edu/odu/cs/cs411/Backend/Incorrect_Beams" # path to mxl files containing incorrect beams format
 
 # Instantiate the model and define loss function and optimizer
-model = RNNModel(input_size, hidden_size, output_size) # Neural Network Model to use sequential data and patterns to predict the most likely scenario
+model = NBPModel(input_size, hidden_size, num_layers) # Neural Network Model to use sequential data and patterns to predict the most likely scenario
 criterion = nn.MSELoss() # Mean-Square Error Loss, best for regression. Outputs number P ∈[0,1]
-optimizer = torch.optim.Adam(model.parameters(), lr=0.001) # Best default optimizer,default learning rate is 0.001, best results 0.002-0.003. If facing overfitting adjust learning rate.
+optimizer = torch.optim.Adam(model.parameters(), learning_rate) # Best default optimizer,default learning rate is 0.001, best results 0.002-0.003. If facing overfitting adjust learning rate.
 
 # Create instances of the custom dataset
 train_dataset = MusicXMLDataset(train_folder_path)  
 test_dataset = MusicXMLDataset(test_folder_path)
 
 # Create data loaders for training and testing
-train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
-test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
+train_loader = DataLoader(train_dataset, batch_size, shuffle=True)
+test_loader = DataLoader(test_dataset, batch_size, shuffle=False)
 
 # Train model using training dataset
 def train_model(model, train_loader):
