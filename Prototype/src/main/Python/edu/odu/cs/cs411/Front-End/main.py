@@ -1025,18 +1025,33 @@ class App(CTk):
 
     # Method to maximize the window
     def maximize(self):
+        """Maximizes The Window"""
         self.state("zoomed")
 
     def change_duration(self, part_num=-1, measure_num=-1, note_num=-1, length='whole', num_dots=0):
-        print(part_num)
-        print(measure_num)
-        print(note_num)
+        """"Changes The Duration Of A Specified Note To A PAssed Duration
+        
+        Args:
+            part_num (_int_): Index Of The Part That Contains The Note In song.parts
+            measure_num (_int_): Index Of The Measure That Contains The Note In song.parts[i].measure
+            note_num (_int_): Index Of The Note In song.part[i].measure(j).notes       
+            length (_str_): String That Cooresponds To Desired Length In Music21 Library
+            num_dots (_int_): The Number Of Dots That Should Be Listed On The Note ( Each Dot Adds .5 Duration To A Note)
+        """
         if part_num is not -1 and measure_num is not -1 and note_num is not -1:
             self.song.change_duration(part_num, measure_num, note_num, length, num_dots)
-            print('HELLO WORLD')
+            self.get_selected_note() #Reselects The Modified Note (Avoids Null Pointer Exception)
             self.display()
 
     def display_note(self, part_num=1, measure_num=1, note_num=1):
+        """Checks I The Passed Note Is Valid, If Valid Displays Note Information
+        
+        Args:
+            part_num (_int_): Index Of The Part That Contains The Note In song.parts
+            measure_num (_int_): Index Of The Measure That Contains The Note In song.parts[i].measure
+            note_num (_int_): Index Of The Note In song.part[i].measure(j).notes        
+        """
+
         if not (self.song.parsed_music == None):
             try:
                 if 'rest' not in self.song.parsed_music.parts[int(part_num)-1].measure(int(measure_num)).notesAndRests[int(note_num)-1].name:
@@ -1047,9 +1062,16 @@ class App(CTk):
             except IndexError as e:
                 pass
 
-    def get_selected_note(self, internal_call=True, part_num=-1, measure_num=-1, note_num=-1):
-        """Reads In The Part, Measure, And Note values (_int_) From The Textboxes"""
-        if internal_call:
+    def get_selected_note(self, internal_call=False, part_num=-1, measure_num=-1, note_num=-1):
+        """Reads In The Part, Measure, And Note values (_int_) From The Textboxes
+        
+        Args:
+            internal_call (_bool_): Bool Variable For Niche Situations And Testing
+            part_num (_int_): Index Of The Part That Contains The Note In song.parts
+            measure_num (_int_): Index Of The Measure That Contains The Note In song.parts[i].measure
+            note_num (_int_): Index Of The Note In song.part[i].measure(j).notes
+        """
+        if not internal_call:
             part_num = self.place_entry.get()
             measure_num = self.measure_entry.get()
             note_num = self.note_entry.get()
@@ -1062,6 +1084,7 @@ class App(CTk):
         
     # Method to add the menu
     def add_menu(self):
+        """Adds Menu Elements To The App"""
         self.menu_bar = Menu(self)
         self.menu_file = Menu(self.menu_bar, tearoff=0)
         self.menu_edit = Menu(self.menu_bar, tearoff=0)
