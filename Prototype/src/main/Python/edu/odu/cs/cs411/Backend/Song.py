@@ -151,6 +151,7 @@ class Song(object):
             end (_int_): The number of beams of type 'stop' that have to be added
         """
         n =  self.parsed_music.parts[part-1].measure(measure).notesAndRests[note-1]
+        self.remove_beams(part, measure, note)
         
         if middle > 0:
             for i in range(middle):
@@ -163,6 +164,18 @@ class Song(object):
         if end > 0:
             for i in range(end):
                 n.beams.append('stop')
+                
+    def remove_beams(self, part, measure, note):
+        """Remove beams from a note
+
+        Args:
+            part (_int_): The number of the part where the note is located, where the first part would be 1
+            measure (_int_): The number of the measure where the note is located
+            note (_int_): The number of the note. If there are 5 notes, and the 3rd one must be changed, this number would be 3
+        """
+        n =  self.parsed_music.parts[part-1].measure(measure).notesAndRests[note-1]
+        n.beams.beamsList = []
+        
                 
     #def add_beams_between_notes(self, part, measure, notes):
         """Given a list of notes, it inserts simple beams between notes. It does not include partial beams.
