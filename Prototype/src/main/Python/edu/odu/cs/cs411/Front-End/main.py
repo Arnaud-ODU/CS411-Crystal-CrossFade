@@ -34,6 +34,8 @@ class App(CTk):
         super().__init__(**kwargs)
 
         # Initialize various variables and settings
+        self.song = Song() #Default Song To Store Unit A Song Is Imported
+        self.imported = False #False Until A Song Has Been Imported
         self.var_view_signatures = IntVar(value=1)
         self.var_view_dynamics = IntVar(value=1)
         self.var_view_duration = IntVar(value=1)
@@ -188,8 +190,7 @@ class App(CTk):
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=3)
 
-        self.song = Song() #Default Song To Store Unit A Song Is Imported
-        self.imported = False #False Until A Song Has Been Imported
+        
 
     # Method to add the toolbar
     def add_toolbar(self):
@@ -841,7 +842,7 @@ class App(CTk):
 
         self.place_entry = CTkEntry(
             self.frame_note_select,    
-            placeholder_text='Line',
+            placeholder_text='Part',
             placeholder_text_color='grey',
             width=80,
             height=10,
@@ -881,16 +882,53 @@ class App(CTk):
             column=2
         )
         
+        self.note_info = CTkLabel(
+            self.frame_note_select, 
+            text='Note: None', 
+            font=('Helvetica', 16, 'bold'),
+            justify = 'center',
+           anchor="w"
+        )
+        
+        self.note_info.grid(
+            row=4,
+            column=0,
+            columnspan=3,
+            sticky='NEW',
+            padx=5,
+            pady=(5,0)
+        )
+
+        self.duration_info = CTkLabel(
+            self.frame_note_select, 
+            text='Duration Type: None', 
+            font=('Helvetica', 16, 'bold'),
+            justify = 'center',
+           anchor="w"
+        )
+        
+        self.duration_info.grid(
+            row=4,
+            column=1,
+            columnspan=3,
+            sticky='NEW',
+            padx=5,
+            pady=(5,0)
+        )
+
         CTkButton(
             self.frame_note_select_buttons,
             text='Select',
             font=('Helvetica', 18),
             width=0,
-            command=self.get_note_info()
+            command=self.get_selected_note
         ).grid(
             row=3,
             column=0
         )
+
+        
+
         #self.place_textbox = Entry(width=30).place(x=50, y=290)
         #MARKER
   
@@ -959,17 +997,20 @@ class App(CTk):
     def maximize(self):
         self.state("zoomed")
 
+    def display_note(self, part_num=1, measure_num=1, note_num=1):
+        if not (self.song.parsed_music == None):
+            self.note_info.configure(text='Note: ' + self.song.parsed_music.parts[int(part_num)-1].measure(int(measure_num)).notes[int(note_num)-1].name)
+            self.duration_info.configure(text='Duration: ' + self.song.parsed_music.parts[int(part_num)-1].measure(int(measure_num)).notes[int(note_num)-1].duration.type)
+        
 
-
-
-    def get_note_info(self, button_pressed=True, part_num=-1, measure_num=-1, note_num=-1):
+    def get_selected_note(self, button_pressed=True, part_num=-1, measure_num=-1, note_num=-1):
         """Reads In The Part, Measure, And Note values (_int_) From The Textboxes"""
         if button_pressed:
             part_num = self.place_entry.get()
             measure_num = self.measure_entry.get()
             note_num = self.note_entry.get()
-            pass
 
+        self.display_note(part_num, measure_num, note_num)
         return part_num, measure_num, note_num
 
 
@@ -1211,6 +1252,10 @@ class App(CTk):
         """Displays the Current Version Of The MusicXML File"""
         score = self.song.parsed_music
         # Save it as a PNG image
+        #Clear canvas
+        for child in self.canvas_frame.winfo_children():
+            child.pack_forget()
+
         img_path = score.write('musicxml.png', fp='Images/output.png')
         img = Image.open(img_path)
         img.thumbnail(
