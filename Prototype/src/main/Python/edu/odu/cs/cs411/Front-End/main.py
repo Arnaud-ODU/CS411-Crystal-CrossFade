@@ -1039,8 +1039,8 @@ class App(CTk):
     def display_note(self, part_num=1, measure_num=1, note_num=1):
         if not (self.song.parsed_music == None):
             try:
-                self.note_info.configure(text='Note: ' + self.song.parsed_music.parts[int(part_num)-1].measure(int(measure_num)).notes[int(note_num)-1].name)
-                self.duration_info.configure(text='Duration: ' + self.song.parsed_music.parts[int(part_num)-1].measure(int(measure_num)).notes[int(note_num)-1].duration.type)
+                self.note_info.configure(text='Note: ' + self.song.parsed_music.parts[int(part_num)-1].measure(int(measure_num)).notesAndRests[int(note_num)-1].name)
+                self.duration_info.configure(text='Duration: ' + self.song.parsed_music.parts[int(part_num)-1].measure(int(measure_num)).notesAndRests[int(note_num)-1].duration.type)
             except IndexError as e:
                 pass
 
