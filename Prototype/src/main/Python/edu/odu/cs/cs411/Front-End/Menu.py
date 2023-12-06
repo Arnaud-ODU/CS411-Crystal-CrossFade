@@ -1,7 +1,13 @@
 import tkinter as tk
 from tkinter import ttk, filedialog
+from customtkinter import *
 import os
+import sys
 import music21 as m21
+
+sys.path.append('Prototype/src/main/Python/edu/odu/cs/cs411')
+sys.path.append('Prototype/src/main/Python/edu/odu/cs/cs411/Backend')
+sys.path.append('Prototype/src/main/Python/edu/odu/cs/cs411/Front-End')
 
 # Define shades of black and blue
 black = "#000000"
@@ -64,14 +70,14 @@ def open_editor_window():
     from main import App as OtherApp
 
     # Create a new Tk instance for the second window
-    second_window = tk.Toplevel()
-    second_window.title("Editor Window")
+    second_window = tk.Toplevel(root)
+    #second_window.title("Editor Window")
 
     # Create the App instance from the other script
-    editor = OtherApp(second_window)
+    editor = OtherApp(root)
 
     # Start the second window's event loop
-    second_window.mainloop()
+    editor.mainloop()
 
 # Create the main window
 root = tk.Tk()
@@ -83,7 +89,7 @@ label = tk.Label(root, text="Main Menu", font=("Arial", 14, "bold"), bg=black, f
 label.grid(row=1, column=1, pady=10)
 
 # Load and display a resized image on the Main Menu page
-image_path = "CF.png"  # Use a raw string
+image_path = "Prototype/src/main/Python/edu/odu/cs/cs411/Front-End/CF.png"  # Use a raw string
 original_image = tk.PhotoImage(file=image_path)
 resized_image = original_image.subsample(2, 2)  # Adjust the subsample values for resizing
 image_label = tk.Label(root, image=resized_image, bg=black)

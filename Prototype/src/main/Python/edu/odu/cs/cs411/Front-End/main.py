@@ -27,11 +27,11 @@ from Backend.parseMusicXML import parsemusic_XML
 from Backend.Song import *
 
 # Define the main application class
-class App(CTk):
+class App(CTkToplevel):
 
     # Constructor for the application
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, root=None):
+        super().__init__(root)
 
         # Initialize various variables and settings
         self.song = Song() #Default Song To Store Unit A Song Is Imported
