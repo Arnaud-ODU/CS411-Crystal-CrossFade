@@ -51,10 +51,10 @@ class Song(object):
             new_value (_int_, _string_): The new value that the note needs to have
         """
         p = pitch.Pitch(new_value)
-        offset = self.parsed_music.parts[part-1].measure(measure).notes[note-1].offset
+        offset = self.parsed_music.parts[part-1].measure(measure).notesAndRests[note-1].offset
         n = copy.deepcopy(self.parsed_music.parts[part-1].measure(measure).notesAndRests[note-1])
         n.pitch = p
-        self.parsed_music.parts[part-1].measure(measure).remove(self.parsed_music.parts[part-1].measure(measure).notes[note-1])
+        self.parsed_music.parts[part-1].measure(measure).remove(self.parsed_music.parts[part-1].measure(measure).notesAndRests[note-1])
         self.parsed_music.parts[part-1].measure(measure).insert(offset, n)
         
     def increase_pitch_by_semitone(self, part, measure, note):
@@ -65,7 +65,7 @@ class Song(object):
             measure (_int_): The number of the measure where the note is located
             note (_int_): The number of the note. If there are 5 notes, and the 3rd one must be changed, this number would be 3
         """
-        self.parsed_music.parts[part-1].measure(measure).notes[note-1].transpose(1, inPlace=True)
+        self.parsed_music.parts[part-1].measure(measure).notesAndRests[note-1].transpose(1, inPlace=True)
         
     def decrease_pitch_by_semitone(self, part, measure, note):
         """Decreases the pitch of a note by a semitone given the part, measure and position inside the measure of a note.
@@ -75,7 +75,7 @@ class Song(object):
             measure (_int_): The number of the measure where the note is located
             note (_int_): The number of the note. If there are 5 notes, and the 3rd one must be changed, this number would be 3
         """
-        self.parsed_music.parts[part-1].measure(measure).notes[note-1].transpose(-1, inPlace=True)
+        self.parsed_music.parts[part-1].measure(measure).notesAndRests[note-1].transpose(-1, inPlace=True)
 
     #WIP
     #def add_starting_beam(self, part, measure, note):
@@ -150,7 +150,7 @@ class Song(object):
             middle (_int_): The number of beams of type 'continue' that have to be added
             end (_int_): The number of beams of type 'stop' that have to be added
         """
-        n =  self.parsed_music.parts[part-1].measure(measure).notes[note-1]
+        n =  self.parsed_music.parts[part-1].measure(measure).notesAndRests[note-1]
         
         if middle > 0:
             for i in range(middle):
@@ -195,7 +195,7 @@ class Song(object):
             note (_int_): The Number Note That Should Be Marked As An Error
             error_number (_int_): The Number Error That Was Found In The Song
         """
-        n =  self.parsed_music.parts[part-1].measure(measure).notes[note-1]
+        n =  self.parsed_music.parts[part-1].measure(measure).notesAndRests[note-1]
         n.lyric ="Error #" + str(error_number)
         
     def change_duration(self, part, measure, note, neededDuration, neededDots):
@@ -234,7 +234,7 @@ class Song(object):
             measure (_int_): The number of the measure where the note is located
             noteOffset (_int_): The number of the note. If there are 5 notes, and the 3rd one must be changed, this number would be 3
         """
-        n = self.parsed_music.parts[part-1].measure(measure).notes[noteOffset-1]
+        n = self.parsed_music.parts[part-1].measure(measure).notesAndRests[noteOffset-1]
         self.parsed_music.parts[part-1].measure(measure).remove(n, shiftOffsets = True)
     
     def check_beats_per_measure(self, part, measure):
