@@ -501,7 +501,7 @@ class App(CTk):
             pady=10
         )
         
-        #-------------------------------Notes Grouping--------------------------#
+        #-------------------------------Duration Grouping--------------------------#
         self.frame_notes = CTkFrame(
             self.frame_settings,
         )
@@ -599,12 +599,87 @@ class App(CTk):
             pady=10
         )
         
+        #------------------------------Pitch Grouping----------------------------#
+        self.frame_pitch = CTkFrame(
+            self.frame_settings,
+        )
+        self.frame_pitch.grid(
+            row=4,
+            column=0,
+            sticky='NEW',
+            padx=10,
+            pady=10
+        )
+       
+        self.frame_pitch.grid_columnconfigure((0,1,2), weight=1)
+        CTkLabel(
+            self.frame_pitch, 
+            text='Notes Pitch', 
+            font=('Helvetica', 18, 'bold')
+        ).grid(
+            row=0,
+            column=0,
+            columnspan=3,
+            sticky='NEW',
+            padx=5,
+            pady=5
+        )
+
+        self.frame_pitch_buttons = CTkFrame(
+            self.frame_pitch,
+        )
+        self.frame_pitch_buttons.grid(
+            row=1,
+            column=3,
+            padx=5,
+            pady=10
+        )
+
+
+        self.octive_entry = CTkEntry(
+            self.frame_pitch,    
+            placeholder_text='Octive',
+            placeholder_text_color='grey',
+            width=80,
+            height=10,
+            fg_color='dark blue',
+            justify='center'
+        )
+        self.octive_entry.grid(
+            row=1,
+            column=0
+        )
+       
+        self.letter_entry = CTkEntry(
+            self.frame_pitch,    
+            placeholder_text='Note Name',
+            placeholder_text_color='grey',
+            width=80,
+            height=10,
+            fg_color='dark blue',
+            justify='center'
+        )
+        self.letter_entry.grid(
+            row=1,
+            column=2
+        )
+
+        CTkButton(
+            self.frame_pitch_buttons,
+            text='Change Pitch',
+            font=('Helvetica', 18),
+            width=0,
+            command=self.change_pitch_clicked
+        ).grid(
+            row=3,
+            column=0
+        )
         #------------------------------Key Grouping------------------------------#
         self.frame_key = CTkFrame(
             self.frame_settings,
         )
         self.frame_key.grid(
-            row=4,
+            row=5,
             column=0,
             sticky='NEW',
             padx=10,
@@ -667,7 +742,7 @@ class App(CTk):
             self.frame_settings,
         )
         self.frame_transpose.grid(
-            row=5,
+            row=6,
             column=0,
             sticky='NEW',
             padx=10,
@@ -759,7 +834,7 @@ class App(CTk):
             self.frame_settings,
         )
         self.frame_note_select.grid(
-            row=6,
+            row=7,
             column=0,
             sticky='NEW',
             padx=10,
@@ -1023,13 +1098,27 @@ class App(CTk):
             )
         self.var_keys.set('')
 
+    def change_pitch_clicked(self, part_num=-1, measure_num=-1, note_num=-1, new_pitch='C4'):
+        """Change A Note In The Parsed Music
+
+        Args:
+            part_num (_int_): The number of the part where the note is located, where the first part would be 1
+            measure_num (_int_): The number of the measure where the note is located
+            note_num (_int_): The number of the note. If there are 5 notes, and the 3rd one must be changed, this number would be 3
+            new_pitch (_string_): The New Pitch That The Note Needs To Have (ex: 'C#4')
+        """
+        part_num, measure_num, note_num = self.get_selected_note()
+        new_pitch = self.letter_entry.get() + self.octive_entry.get()
+        if part_num is not -1 and measure_num is not -1 and note_num is not -1:
+            self.song.change_note_pitch(int(part_num), int(measure_num), int(note_num), new_pitch)
+
     # Method to maximize the window
     def maximize(self):
         """Maximizes The Window"""
         self.state("zoomed")
 
     def change_duration(self, part_num=-1, measure_num=-1, note_num=-1, length='whole', num_dots=0):
-        """"Changes The Duration Of A Specified Note To A PAssed Duration
+        """"Changes The Duration Of A Specified Note To A Passed Duration
         
         Args:
             part_num (_int_): Index Of The Part That Contains The Note In song.parts
