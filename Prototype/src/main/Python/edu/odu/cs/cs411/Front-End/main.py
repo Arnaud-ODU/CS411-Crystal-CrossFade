@@ -763,8 +763,7 @@ class App(CTk):
         CTkLabel(
             self.frame_note_select, 
             text='Note Selection', 
-            font=('Helvetica', 18, 'bold'),
-            justify='center'
+            font=('Helvetica', 18, 'bold')
         ).grid(
             row=0,
             column=0,
@@ -839,16 +838,7 @@ class App(CTk):
             pady=10
         )
 
-        CTkButton(
-            self.frame_note_select_buttons,
-            text='Select',
-            font=('Helvetica', 18),
-            width=0#, TODO
-            #command=self.get_note_info()
-        ).grid(
-            row=3,
-            column=0
-        )
+
         self.place_entry = CTkEntry(
             self.frame_note_select,    
             placeholder_text='Line',
@@ -890,7 +880,17 @@ class App(CTk):
             row=3,
             column=2
         )
-
+        
+        CTkButton(
+            self.frame_note_select_buttons,
+            text='Select',
+            font=('Helvetica', 18),
+            width=0,
+            command=self.get_note_info()
+        ).grid(
+            row=3,
+            column=0
+        )
         #self.place_textbox = Entry(width=30).place(x=50, y=290)
         #MARKER
   
@@ -962,9 +962,16 @@ class App(CTk):
 
 
 
-    def Select_Note(self):
-        """Reads In The Part, Measure, And Note values (_int_) Fro The Textboxes"""
-        placeholder = 'placeholder'
+    def get_note_info(self, button_pressed=True, part_num=-1, measure_num=-1, note_num=-1):
+        """Reads In The Part, Measure, And Note values (_int_) From The Textboxes"""
+        if button_pressed:
+            part_num = self.place_entry.get()
+            measure_num = self.measure_entry.get()
+            note_num = self.note_entry.get()
+            pass
+
+        return part_num, measure_num, note_num
+
 
 
         
@@ -1216,9 +1223,12 @@ class App(CTk):
         Label(self.canvas_frame, image=self.img_timeline).pack()
         img.close()
 
+    def run(self):
+        self.mainloop()
 
 
 # Main entry point
 if __name__ == '__main__':
     app = App()
-    app.mainloop()
+    app.run()
+    #app.mainloop()
