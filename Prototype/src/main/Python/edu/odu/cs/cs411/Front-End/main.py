@@ -763,7 +763,8 @@ class App(CTk):
         CTkLabel(
             self.frame_note_select, 
             text='Note Selection', 
-            font=('Helvetica', 18, 'bold')
+            font=('Helvetica', 18, 'bold'),
+            justify='center'
         ).grid(
             row=0,
             column=0,
@@ -785,48 +786,48 @@ class App(CTk):
             padx=5,
             pady=(0,5)
         )
-        CTkLabel(
-            self.frame_note_select, 
-            text='        Line', 
-            font=('Helvetica', 12, 'bold'),
-            justify = 'center',
-            anchor="w"
-        ).grid(
-            row=2,
-            column=0,
-            columnspan=3,
-            sticky='NEW',
-            padx=5,
-            pady=(5,0)
-        )
-        CTkLabel(
-            self.frame_note_select, 
-            text='Measure', 
-            font=('Helvetica', 12, 'bold'),
-            justify='center',
-            anchor='w'
-        ).grid(
-            row=2,
-            column=1,
-            columnspan=3,
-            sticky='NEW',
-            padx=5,
-            pady=(5,0)
-        )
-        CTkLabel(
-            self.frame_note_select, 
-            text='Note', 
-            font=('Helvetica', 12, 'bold'),
-            justify='center',
-            anchor='w'
-        ).grid(
-            row=2,
-            column=2,
-            columnspan=3,
-            sticky='NEW',
-            padx=0,
-            pady=(5,0)
-        )
+        #CTkLabel(
+        #    self.frame_note_select, 
+        #    text='        Line', 
+        #    font=('Helvetica', 12, 'bold'),
+        #    justify = 'center',
+        #    anchor="w"
+        #).grid(
+        #    row=2,
+        #    column=0,
+        #    columnspan=3,
+        #    sticky='NEW',
+        #    padx=5,
+        #    pady=(5,0)
+        #)
+        #CTkLabel(
+        #    self.frame_note_select, 
+        #    text='Measure', 
+        #    font=('Helvetica', 12, 'bold'),
+        #    justify='center',
+        #    anchor='w'
+        #).grid(
+        #    row=2,
+        #    column=1,
+        #    columnspan=3,
+        #    sticky='NEW',
+        #    padx=5,
+        #    pady=(5,0)
+        #)
+        #CTkLabel(
+        #    self.frame_note_select, 
+        #    text='Note', 
+        #    font=('Helvetica', 12, 'bold'),
+        #    justify='center',
+        #    anchor='w'
+        #).grid(
+        #    row=2,
+        #    column=2,
+        #    columnspan=3,
+        #    sticky='NEW',
+        #    padx=0,
+        #    pady=(5,0)
+        #)
 
         self.frame_note_select_buttons = CTkFrame(
             self.frame_note_select,
@@ -848,7 +849,47 @@ class App(CTk):
             row=3,
             column=0
         )
+        self.place_entry = CTkEntry(
+            self.frame_note_select,    
+            placeholder_text='Line',
+            placeholder_text_color='grey',
+            width=80,
+            height=10,
+            fg_color='light blue',
+            justify='center'
+        )
+        self.place_entry.grid(
+            row=3,
+            column=0
+        )
 
+        self.measure_entry = CTkEntry(
+            self.frame_note_select,    
+            placeholder_text='Measure',
+            placeholder_text_color='grey',
+            width=80,
+            height=10,
+            fg_color='light blue',
+            justify='center'
+        )
+        self.measure_entry.grid(
+            row=3,
+            column=1
+        )
+
+        self.note_entry = CTkEntry(
+            self.frame_note_select,    
+            placeholder_text='Note',
+            placeholder_text_color='grey',
+            width=80,
+            height=10,
+            fg_color='light blue',
+            justify='center'
+        )
+        self.note_entry.grid(
+            row=3,
+            column=2
+        )
 
         #self.place_textbox = Entry(width=30).place(x=50, y=290)
         #MARKER
