@@ -852,7 +852,7 @@ class App(CTk):
             placeholder_text_color='grey',
             width=80,
             height=10,
-            fg_color='light blue',
+            fg_color='dark blue',
             justify='center'
         )
         self.place_entry.grid(
@@ -866,7 +866,7 @@ class App(CTk):
             placeholder_text_color='grey',
             width=80,
             height=10,
-            fg_color='light blue',
+            fg_color='dark blue',
             justify='center'
         )
         self.measure_entry.grid(
@@ -880,7 +880,7 @@ class App(CTk):
             placeholder_text_color='grey',
             width=80,
             height=10,
-            fg_color='light blue',
+            fg_color='dark blue',
             justify='center'
         )
         self.note_entry.grid(
@@ -972,22 +972,28 @@ class App(CTk):
         pass
 
     def whole_clicked(self):
-        self.change_duration(self.get_selected_note, length='whole')
+        part_num, measure_num, note_num = self.get_selected_note()
+        self.change_duration(int(part_num), int(measure_num), int(note_num), length='whole')
 
     def half_clicked(self):
-        self.change_duration(self.get_selected_note, length='half')
+        part_num, measure_num, note_num = self.get_selected_note()
+        self.change_duration(int(part_num), int(measure_num), int(note_num), length='half')
 
     def quarter_clicked(self):
-        self.change_duration(self.get_selected_note, length='quarter')
+        part_num, measure_num, note_num = self.get_selected_note()
+        self.change_duration(int(part_num), int(measure_num), int(note_num), length='quarter')
 
     def eighth_clicked(self):
-        self.change_duration(self.get_selected_note, length='eighth')
+        part_num, measure_num, note_num = self.get_selected_note()
+        self.change_duration(int(part_num), int(measure_num), int(note_num), length='eighth')
     
     def sixteenth_clicked(self):
-        self.change_duration(self.get_selected_note, length='16th')
+        part_num, measure_num, note_num = self.get_selected_note()
+        self.change_duration(int(part_num), int(measure_num), int(note_num), length='16th')
     
     def thirtysecond_clicked(self):
-        self.change_duration(self.get_selected_note, length='32nd')
+        part_num, measure_num, note_num = self.get_selected_note()
+        self.change_duration(int(part_num), int(measure_num), int(note_num), length='32nd')
 
     def transpose_mode_clicked(self, choice):
         if choice == 'minor':
@@ -1022,8 +1028,12 @@ class App(CTk):
         self.state("zoomed")
 
     def change_duration(self, part_num=-1, measure_num=-1, note_num=-1, length='whole', num_dots=0):
+        print(part_num)
+        print(measure_num)
+        print(note_num)
         if part_num is not -1 and measure_num is not -1 and note_num is not -1:
             self.song.change_duration(part_num, measure_num, note_num, length, num_dots)
+            print('HELLO WORLD')
             self.display()
 
     def display_note(self, part_num=1, measure_num=1, note_num=1):
