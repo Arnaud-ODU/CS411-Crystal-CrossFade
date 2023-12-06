@@ -49,9 +49,9 @@ def parse_musicxml(file_path):
     for note in score.flat.notes:
         # Extract features for each note or chord
         if note.isNote: 
-         note_features = [note.measureNumber, note.offset, note.pitch.midi, note.duration.quarterLength] 
+         note_features = [note.measureNumber, note._getMeasureOffset(score), note.pitch.ps, note.duration.quarterLength] 
         else: 
-         note_features = [note.measureNumber, note.offset, sum(p.midi for p in note.pitches) / len(note.pitches), note.duration.quarterLength]
+         note_features = [note.measureNumber, note._getMeasureOffset(score) ,sum(p.midi for p in note.pitches) / len(note.pitches), note.duration.quarterLength]
         # Add beam info to the note features for each note/chord
         note_features.extend(parse_beams(note.beams))
         collection_features.append(note_features)    
