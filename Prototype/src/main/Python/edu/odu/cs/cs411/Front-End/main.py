@@ -1111,6 +1111,8 @@ class App(CTk):
         new_pitch = self.letter_entry.get() + self.octive_entry.get()
         if part_num is not -1 and measure_num is not -1 and note_num is not -1:
             self.song.change_note_pitch(int(part_num), int(measure_num), int(note_num), new_pitch)
+            self.get_selected_note() #Reselects The Modified Note (Avoids Null Pointer Exception)
+            self.display()
 
     # Method to maximize the window
     def maximize(self):
