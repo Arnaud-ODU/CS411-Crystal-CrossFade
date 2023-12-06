@@ -530,7 +530,8 @@ class App(CTk):
             self.frame_notes, 
             image=self.img_wholenote,
             text='',
-            width=1
+            width=1,
+            command=self.whole_clicked
         )
         self.button_wholenote.grid(
             row=1,
@@ -541,7 +542,8 @@ class App(CTk):
             self.frame_notes, 
             image=self.img_halfnote,
             text='',
-            width=1
+            width=1,
+            command=self.half_clicked
         )
         self.button_halfnote.grid(
             row=1,
@@ -552,7 +554,8 @@ class App(CTk):
             self.frame_notes, 
             image=self.img_quarternote,
             text='',
-            width=1
+            width=1,
+            command=self.quarter_clicked
         )
         self.button_quarternote.grid(
             row=1,
@@ -563,7 +566,8 @@ class App(CTk):
             self.frame_notes, 
             image=self.img_eighthnote,
             text='',
-            width=1
+            width=1,
+            command=self.eighth_clicked
         )
         self.button_eighthnote.grid(
             row=1,
@@ -574,7 +578,8 @@ class App(CTk):
             self.frame_notes, 
             image=self.img_sixteenthnote,
             text='',
-            width=1
+            width=1,
+            command=self.sixteenth_clicked
         )
         self.button_sixteenthnote.grid(
             row=1,
@@ -585,8 +590,9 @@ class App(CTk):
             self.frame_notes, 
             image=self.img_thirtysecondnote,
             text='',
-            width=1
-        )
+            width=1,
+            command=self.thirtysecond_clicked
+        )#MARKER
         self.button_thirtysecondnote.grid(
             row=1,
             column=5,
@@ -965,6 +971,24 @@ class App(CTk):
     def time_signature_clicked(self, choice):
         pass
 
+    def whole_clicked(self):
+        self.change_duration(self.get_selected_note, length='whole')
+
+    def half_clicked(self):
+        self.change_duration(self.get_selected_note, length='half')
+
+    def quarter_clicked(self):
+        self.change_duration(self.get_selected_note, length='quarter')
+
+    def eighth_clicked(self):
+        self.change_duration(self.get_selected_note, length='eighth')
+    
+    def sixteenth_clicked(self):
+        self.change_duration(self.get_selected_note, length='16th')
+    
+    def thirtysecond_clicked(self):
+        self.change_duration(self.get_selected_note, length='32nd')
+
     def transpose_mode_clicked(self, choice):
         if choice == 'minor':
             self.dropdown_transpose.configure(
@@ -997,15 +1021,22 @@ class App(CTk):
     def maximize(self):
         self.state("zoomed")
 
+    def change_duration(self, part_num=-1, measure_num=-1, note_num=-1, length='whole', num_dots=0):
+        if part_num is not -1 and measure_num is not -1 and note_num is not -1:
+            self.song.change_duration(part_num, measure_num, note_num, length, num_dots)
+            self.display()
+
     def display_note(self, part_num=1, measure_num=1, note_num=1):
         if not (self.song.parsed_music == None):
-            self.note_info.configure(text='Note: ' + self.song.parsed_music.parts[int(part_num)-1].measure(int(measure_num)).notes[int(note_num)-1].name)
-            self.duration_info.configure(text='Duration: ' + self.song.parsed_music.parts[int(part_num)-1].measure(int(measure_num)).notes[int(note_num)-1].duration.type)
-        
+            try:
+                self.note_info.configure(text='Note: ' + self.song.parsed_music.parts[int(part_num)-1].measure(int(measure_num)).notes[int(note_num)-1].name)
+                self.duration_info.configure(text='Duration: ' + self.song.parsed_music.parts[int(part_num)-1].measure(int(measure_num)).notes[int(note_num)-1].duration.type)
+            except IndexError as e:
+                pass
 
-    def get_selected_note(self, button_pressed=True, part_num=-1, measure_num=-1, note_num=-1):
+    def get_selected_note(self, internal_call=True, part_num=-1, measure_num=-1, note_num=-1):
         """Reads In The Part, Measure, And Note values (_int_) From The Textboxes"""
-        if button_pressed:
+        if internal_call:
             part_num = self.place_entry.get()
             measure_num = self.measure_entry.get()
             note_num = self.note_entry.get()
