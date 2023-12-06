@@ -1,6 +1,7 @@
 # Import necessary modules
 from tkinter import *
 from tkinter.filedialog import asksaveasfile, askdirectory, asksaveasfilename
+from tkinter.tix import Select
 from customtkinter import *
 from PIL import Image, ImageTk
 from configparser import ConfigParser
@@ -38,6 +39,7 @@ class App(CTk):
         self.var_view_duration = IntVar(value=1)
         self.var_view_key = IntVar(value=1)
         self.var_view_transpose = IntVar(value=1)
+        self.var_view_note_select = IntVar(value=1)
         self.configurator = ConfigParser()
         self.title('CrossFade Main Menu')
 
@@ -174,6 +176,7 @@ class App(CTk):
             light_image=Image.open("Images/comment.png"),
             size=(30, 30)
         )
+
 
         # Add settings, read configuration, and set up toolbar and timeline
         self.add_settings()
@@ -326,6 +329,9 @@ class App(CTk):
             self.var_view_transpose.set(self.configurator['view']['transpose'])
             if not self.var_view_transpose.get():
                 self.frame_transpose.grid_forget()
+            self.var_view_note_select.set(self.configurator['view']['select'])
+            if not self.var_view_note_select.get():
+                self.frame_note_select.grid_forget()
         else:
             self.configurator['view'] = {
                 'theme': 'dark',
@@ -336,7 +342,9 @@ class App(CTk):
  
     # Method to add various settings
     def add_settings(self):
-        self.frame_settings = CTkFrame(self)
+
+        #--------------------------------Settings Grouping-----------------------#
+        self.frame_settings = CTkScrollableFrame(self, fg_color="transparent")
         self.frame_settings.grid(
             row=0,
             rowspan=2,
@@ -346,6 +354,8 @@ class App(CTk):
             pady=10
         )
         self.frame_settings.grid_columnconfigure(0, weight=1)
+        
+        #--------------------------------Time Signature Grouping-----------------#
         self.frame_signatures = CTkFrame(
             self.frame_settings,
         )
@@ -379,6 +389,8 @@ class App(CTk):
             padx=5,
             pady=10
         )
+       
+        #--------------------------------Dynamics Grouping-----------------------#
         self.frame_dynamics = CTkFrame(
             self.frame_settings,
         )
@@ -389,6 +401,7 @@ class App(CTk):
             padx=10,
             pady=10
         )
+
         self.frame_dynamics.grid_columnconfigure((0,1,2,3,4,5), weight=1)
         CTkLabel(
             self.frame_dynamics, 
@@ -486,6 +499,8 @@ class App(CTk):
             padx=10,
             pady=10
         )
+        
+        #-------------------------------Notes Grouping--------------------------#
         self.frame_notes = CTkFrame(
             self.frame_settings,
         )
@@ -496,6 +511,7 @@ class App(CTk):
             padx=10,
             pady=10
         )
+
         self.frame_notes.grid_columnconfigure((0,1,2,3,4,5), weight=1)
         CTkLabel(
             self.frame_notes, 
@@ -575,6 +591,8 @@ class App(CTk):
             column=5,
             pady=10
         )
+        
+        #------------------------------Key Grouping------------------------------#
         self.frame_key = CTkFrame(
             self.frame_settings,
         )
@@ -585,6 +603,7 @@ class App(CTk):
             padx=10,
             pady=10
         )
+
         self.frame_key.grid_columnconfigure((0,1), weight=1)
         CTkLabel(
             self.frame_key, 
@@ -635,6 +654,8 @@ class App(CTk):
             padx=5,
             pady=10
         )
+        
+        #----------------------------Transpose Grouping---------------------------#
         self.frame_transpose = CTkFrame(
             self.frame_settings,
         )
@@ -645,6 +666,7 @@ class App(CTk):
             padx=10,
             pady=10
         )
+
         self.frame_transpose.grid_columnconfigure((0,1,2), weight=1)
         CTkLabel(
             self.frame_transpose, 
@@ -724,6 +746,112 @@ class App(CTk):
             row=1,
             column=0
         )
+
+        #----------------------------Note Select Grouping---------------------------#
+        self.frame_note_select = CTkFrame(
+            self.frame_settings,
+        )
+        self.frame_note_select.grid(
+            row=6,
+            column=0,
+            sticky='NEW',
+            padx=10,
+            pady=10
+        )
+        
+        self.frame_note_select.grid_columnconfigure((0,1,2), weight=1)
+        CTkLabel(
+            self.frame_note_select, 
+            text='Note Selection', 
+            font=('Helvetica', 18, 'bold')
+        ).grid(
+            row=0,
+            column=0,
+            columnspan=3,
+            sticky='NEW',
+            padx=5,
+            pady=(5,0)
+        )
+        CTkLabel(
+            self.frame_note_select, 
+            text='(select the note to be adjusted)', 
+            font=('Helvetica', 12),
+            text_color='grey'
+        ).grid(
+            row=1,
+            column=0,
+            columnspan=3,
+            sticky='NEW',
+            padx=5,
+            pady=(0,5)
+        )
+        CTkLabel(
+            self.frame_note_select, 
+            text='        Line', 
+            font=('Helvetica', 12, 'bold'),
+            justify = 'center',
+            anchor="w"
+        ).grid(
+            row=2,
+            column=0,
+            columnspan=3,
+            sticky='NEW',
+            padx=5,
+            pady=(5,0)
+        )
+        CTkLabel(
+            self.frame_note_select, 
+            text='Measure', 
+            font=('Helvetica', 12, 'bold'),
+            justify='center',
+            anchor='w'
+        ).grid(
+            row=2,
+            column=1,
+            columnspan=3,
+            sticky='NEW',
+            padx=5,
+            pady=(5,0)
+        )
+        CTkLabel(
+            self.frame_note_select, 
+            text='Note', 
+            font=('Helvetica', 12, 'bold'),
+            justify='center',
+            anchor='w'
+        ).grid(
+            row=2,
+            column=2,
+            columnspan=3,
+            sticky='NEW',
+            padx=0,
+            pady=(5,0)
+        )
+
+        self.frame_note_select_buttons = CTkFrame(
+            self.frame_note_select,
+        )
+        self.frame_note_select_buttons.grid(
+            row=3,
+            column=3,
+            padx=5,
+            pady=10
+        )
+
+        CTkButton(
+            self.frame_note_select_buttons,
+            text='Select',
+            font=('Helvetica', 18),
+            width=0#, TODO
+            #command=self.get_note_info()
+        ).grid(
+            row=3,
+            column=0
+        )
+
+
+        #self.place_textbox = Entry(width=30).place(x=50, y=290)
+        #MARKER
   
     # Methods to handle increment and decrement of transpose
     def increment_transpose(self):
@@ -789,6 +917,15 @@ class App(CTk):
     # Method to maximize the window
     def maximize(self):
         self.state("zoomed")
+
+
+
+
+    def Select_Note(self):
+        """Reads In The Part, Measure, And Note values (_int_) Fro The Textboxes"""
+        placeholder = 'placeholder'
+
+
         
     # Method to add the menu
     def add_menu(self):
@@ -1036,6 +1173,7 @@ class App(CTk):
         )
         self.img_timeline = ImageTk.PhotoImage(img)
         Label(self.canvas_frame, image=self.img_timeline).pack()
+        img.close()
 
 
 
