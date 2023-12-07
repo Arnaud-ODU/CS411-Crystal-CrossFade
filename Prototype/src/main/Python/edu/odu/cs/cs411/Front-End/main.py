@@ -1882,6 +1882,7 @@ class App(CTkToplevel):
     def correct_beam_clicked(self):
         """Uses AI To Determine Likely Errors In Beams"""
         #MARKER
+        mark_error(self, part, measure, note, error_number)
         pass
 
 
