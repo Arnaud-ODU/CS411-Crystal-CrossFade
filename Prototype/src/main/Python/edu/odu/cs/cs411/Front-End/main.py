@@ -52,6 +52,13 @@ class App(CTkToplevel):
             '3/4',
             '4/4'
         )
+        self.durations = (
+            'whole',
+            'quarter',
+            'eighth',
+            '16th',
+            '32nd'
+        )
         self.minor_keys = (
             'A#',
             'D#',
@@ -639,8 +646,118 @@ class App(CTkToplevel):
         )
 
         #-------------------------------Add/Remove Note----------------------------#
+        self.frame_add_remove = CTkFrame(
+            self.frame_settings,
+        )
+        self.frame_add_remove.grid(
+            row=4,
+            column=0,
+            sticky='NEW',
+            padx=10,
+            pady=10
+        )
+        
+        self.frame_add_remove.grid_columnconfigure((0,1,2), weight=1)
+        CTkLabel(
+            self.frame_add_remove, 
+            text='Add/Remove Note', 
+            font=('Helvetica', 18, 'bold')
+        ).grid(
+            row=0,
+            column=0,
+            columnspan=3,
+            sticky='NEW',
+            padx=5,
+            pady=(5,0)
+        )
+        CTkLabel(
+            self.frame_add_remove, 
+            text='(Add new note or remove a note in the selected position)', 
+            font=('Helvetica', 12),
+            text_color='grey'
+        ).grid(
+            row=1,
+            column=0,
+            columnspan=3,
+            sticky='NEW',
+            padx=5,
+            pady=(0,5)
+        )
+        
+        self.octive_toadd = CTkEntry(
+            self.frame_add_remove,    
+            placeholder_text='Octive',
+            placeholder_text_color='grey',
+            width=80,
+            height=10,
+            fg_color='dark blue',
+            justify='center'
+        )
+        self.octive_toadd.grid(
+            row=2,
+            column=0
+        )
+       
+        self.letter_toadd = CTkEntry(
+            self.frame_add_remove,    
+            placeholder_text='Note Name',
+            placeholder_text_color='grey',
+            width=80,
+            height=10,
+            fg_color='dark blue',
+            justify='center'
+        )
+        self.letter_toadd.grid(
+            row=2,
+            column=2
+        )
 
-        #row=4
+        ##MARKER
+        self.duration_menu = CTkOptionMenu(
+            self.frame_add_remove,
+            values=self.durations,
+            #command=self.time_signature_clicked,
+            #variable=self.var_time_signatures
+        )
+        self.duration_menu.grid(
+            row=2,
+            column=3,
+            padx=5,
+            pady=10
+        )
+        ##AMREKR
+        
+        self.frame_add_remove_buttons = CTkFrame(
+            self.frame_add_remove,
+            fg_color='transparent'
+        )
+        self.frame_add_remove_buttons.grid(
+            row=3,
+            column=2,
+            padx=5,
+            pady=10
+        )
+        CTkButton(
+            self.frame_add_remove_buttons,
+            text='Add Note',
+            font=('Helvetica', 18),
+            width=0,
+            command=self.add_note_clicked
+        ).grid(
+            row=0,
+            column=0
+        )
+        CTkButton(
+            self.frame_add_remove_buttons,
+            text='Remove Note',
+            font=('Helvetica', 18),
+            width=0,
+            command=self.remove_note_clicked
+        ).grid(
+            row=1,
+            column=0
+        )
+
         #-------------------------------Duration Grouping--------------------------#
         self.frame_notes = CTkFrame(
             self.frame_settings,
@@ -1119,7 +1236,39 @@ class App(CTkToplevel):
         part_num, measure_num, note_num = self.get_selected_note()
         if part_num is not -1 and measure_num is not -1 and note_num is not -1:
             self.song.decrease_pitch_by_semitone(int(part_num), int(measure_num), int(note_num))
-            self.get_selected_note() #Reselects The Modified Note (Avoids Null Pointer Exception)
+            self.get_selected_note() #Reselects The Modified Note (Avoids Potential Null Pointer Exception)
+            self.display()
+
+    def add_note_clicked(self, part_num=-1, measure_num=-1, note_num=-1, note_duration='whole'):
+        """Add A Note In The Currently Selected Position
+
+        Args:
+            part_num (_int_): The number of the part where the note is located, where the first part would be 1
+            measure_num (_int_): The number of the measure where the note is located
+            note_num (_int_): The number of the note. If there are 5 notes, and the 3rd one must be changed, this number would be 3
+        """
+        part_num, measure_num, note_num = self.get_selected_note()
+        note_Offset = self.get_selected_offset()
+        new_pitch = self.letter_toadd.get() + self.octive_toadd.get()
+        note_duration = self.duration_menu.get()
+        if part_num is not -1 and measure_num is not -1 and note_num is not -1:
+            self.song.add_note(int(part_num), int(measure_num), int(note_Offset), note_duration, new_pitch, 0)
+            self.get_selected_note() #Reselects The Modified Note (Avoids Potential Null Pointer Exception)
+            self.display()
+
+    def remove_note_clicked(self, part_num=-1, measure_num=-1, note_num=-1):
+        """Removes The Note In The Currently Selected Position
+
+        Args:
+            part_num (_int_): The number of the part where the note is located, where the first part would be 1
+            measure_num (_int_): The number of the measure where the note is located
+            note_num (_int_): The number of the note. If there are 5 notes, and the 3rd one must be changed, this number would be 3
+        """
+
+        part_num, measure_num, note_num = self.get_selected_note()
+        if part_num is not -1 and measure_num is not -1:
+            self.song.remove_note(int(part_num), int(measure_num), int(self.get_selected_offset()))
+            self.get_selected_note()
             self.display()
 
 
@@ -1179,6 +1328,10 @@ class App(CTkToplevel):
         self.display_note(part_num, measure_num, note_num)
         return part_num, measure_num, note_num
 
+    def get_selected_offset(self):
+        """Returns The Offset Of The Note That Is Currently Selected"""
+        part_num, measure_num, note_num = self.get_selected_note()
+        return self.song.parsed_music.parts[int(part_num)-1].measure(int(measure_num)).notesAndRests[int(note_num)-1].offset
 
 
         
