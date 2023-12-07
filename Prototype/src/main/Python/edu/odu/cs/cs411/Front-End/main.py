@@ -440,8 +440,8 @@ class App(CTkToplevel):
             width=0,
             command=self.correct_beam_clicked
         ).grid(
-            row=0,
-            column=2
+            row=1,
+            column=0
         )
         self.beam_menu = CTkOptionMenu(
             self.frame_beams,
@@ -1880,6 +1880,8 @@ class App(CTkToplevel):
         self.display()
 
     def correct_beam_clicked(self):
+        """Uses AI To Determine Likely Errors In Beams"""
+        #MARKER
         pass
 
 
