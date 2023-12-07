@@ -1886,8 +1886,11 @@ class App(CTkToplevel):
         index = self.song.path.rfind("/")
 
         temp_list = front_ToTrainer(self.song.path, self.song.path[:index])
-        mark_error(self, temp_list[0], temp_list[1], note, error_number)
-        pass
+        i = 1
+        for x in temp_list:
+            self.song.mark_error(int(x[0]), int(x[1]), int(x[2]), i)
+            i+=1
+        self.display()
 
 
     # Method to maximize the window
