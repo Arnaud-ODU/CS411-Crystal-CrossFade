@@ -180,7 +180,7 @@ def evaluate_beam_predictions(input_test_loader):
             print("No Beams Have Been Predicted!")
         return beam_predictions 
 model.train()  # Turns training back on after evalutating
-
+"""
 def note_comparator(file_path):
 
     input_test_data = MusicXMLDataset(file_path)
@@ -205,4 +205,4 @@ def note_comparator(file_path):
         else:
             corrected_list.extend(input_measure_notes)
 
-    return corrected_list
+    return corrected_list """
