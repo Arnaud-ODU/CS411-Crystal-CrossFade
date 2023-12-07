@@ -83,7 +83,7 @@ class MusicXMLDataset(Dataset):
         inputs = data_item[:3] # Use the first four as input [Measure Number, Note Offset, Note pitch, Note Duration]
         # The Beam information will be used as labels for the note information. Labels will be 1 for beam and 0 for no beam.
         if int(data_item[3] > 0):  # If Beam 'Start' is 1, make label as 1.
-            label = torch.tensor(int(data_item[4] > 0), dtype=torch.float32)       
+            label = torch.tensor(int(data_item[3] > 0), dtype=torch.float32)       
       #  elif int(data_item[5] > 0): # If Beam 'Continue' is 2, make label as 1.
            # label = torch.tensor(1, dtype=torch.float32)          
        # elif int(data_item[6] > 0): #If Beam 'Stop' is 3, make label as 1
