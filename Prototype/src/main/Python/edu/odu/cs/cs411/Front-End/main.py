@@ -1248,11 +1248,11 @@ class App(CTkToplevel):
             note_num (_int_): The number of the note. If there are 5 notes, and the 3rd one must be changed, this number would be 3
         """
         part_num, measure_num, note_num = self.get_selected_note()
-        note_Offset = self.get_selected_offset()
+        #note_Offset = self.get_selected_offset()
         new_pitch = self.letter_toadd.get() + self.octive_toadd.get()
         note_duration = self.duration_menu.get()
         if part_num is not -1 and measure_num is not -1 and note_num is not -1:
-            self.song.add_note(int(part_num), int(measure_num), int(note_Offset), note_duration, new_pitch, 0)
+            self.song.add_note(int(part_num), int(measure_num), int(note_num), note_duration, new_pitch, 0)
             self.get_selected_note() #Reselects The Modified Note (Avoids Potential Null Pointer Exception)
             self.display()
 
@@ -1267,7 +1267,7 @@ class App(CTkToplevel):
 
         part_num, measure_num, note_num = self.get_selected_note()
         if part_num is not -1 and measure_num is not -1:
-            self.song.remove_note(int(part_num), int(measure_num), int(self.get_selected_offset()))
+            self.song.remove_note(int(part_num), int(measure_num), int(note_num))
             self.get_selected_note()
             self.display()
 

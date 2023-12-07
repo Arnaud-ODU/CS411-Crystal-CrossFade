@@ -17,13 +17,15 @@
 import torch
 from torch import nn
 from torch.utils.data import DataLoader
-from torchvision import datasets
-from torchvision.transforms import ToTensor
+#from torchvision import datasets
+#from torchvision.transforms import ToTensor
 from torch.nn.utils.rnn import pad_sequence, pack_padded_sequence, pad_packed_sequence
 import torch.optim as optim
 from music21 import *
 import os
 from torch.utils.data import Dataset, DataLoader
+
+#path = os.path.abspath('Prototype/src/main/Python/edu/odu/cs/cs411/Backend/Correct_Beams')
 
 
 # Parse the beams to be in the format of [Start,Continue,Stop,Partial]
@@ -116,8 +118,8 @@ num_layers = 2  # Stack of layers (i.e. LSTM and Linear)
 learning_rate = 0.001  # Learning rate for optimizers to update paramaters
 
 # Paths to the training and testing folders
-train_folder_path = "~/CS411-Crystal-CrossFade/Prototype/src/main/Python/edu/odu/cs/cs411/Backend/Correct_Beams" # path to mxl files containing correct beams format
-#test_folder_path = "~/CS411-Crystal-CrossFade/Prototype/src/main/Python/edu/odu/cs/cs411/Backend/Incorrect_Beams" # path to mxl files containing incorrect beams format
+train_folder_path = os.path.abspath("Prototype/src/main/Python/edu/odu/cs/cs411/Backend/Correct_Beams") # path to mxl files containing correct beams format
+test_folder_path = os.path.abspath("Prototype/src/main/Python/edu/odu/cs/cs411/Backend/Incorrect_Beams") # path to mxl files containing incorrect beams format
 
 # Instantiate the model and define loss function and optimizer
 model = NBPModel(input_size, hidden_size, num_layers) # Neural Network Model to use sequential data and patterns to predict the most likely scenario
@@ -126,11 +128,11 @@ optimizer = torch.optim.Adam(model.parameters(), learning_rate) # Best default o
 
 # Create instances of the custom dataset
 train_dataset = MusicXMLDataset(train_folder_path)
-#test_dataset = MusicXMLDataset(test_folder_path)
+test_dataset = MusicXMLDataset(test_folder_path)
 
 # Create data loaders for training and testing
 train_loader = DataLoader(train_dataset, batch_size, shuffle=True)
-#test_loader = DataLoader(test_dataset, batch_size, shuffle=False)
+test_loader = DataLoader(test_dataset, batch_size, shuffle=False)
 
 # Train model using training dataset
 def train_model(num_epochs):
