@@ -133,11 +133,11 @@ optimizer = torch.optim.Adam(model.parameters(), learning_rate) # Best default o
 
 # Create instances of the custom dataset
 train_dataset = MusicXMLDataset(train_folder_path)
-test_dataset = MusicXMLDataset(test_folder_path)
+#test_dataset = MusicXMLDataset(test_folder_path)
 
 # Create data loaders for training and testing
 train_loader = DataLoader(train_dataset, batch_size, shuffle=True)
-test_loader = DataLoader(test_dataset, batch_size, shuffle=False)
+#test_loader = DataLoader(test_dataset, batch_size, shuffle=False)
 
 # Train model using training dataset
 def train_model(num_epochs):
@@ -184,6 +184,18 @@ def evaluate_beam_predictions(input_test_loader):
         else:  # If there are no predicted beams
             print("No Beams Have Been Predicted!")
         return beam_predictions 
+def front_ToTrainer(file_path,directory):
+        test_folder_path = directory
+        test_dataset = MusicXMLDataset(test_folder_path)
+        test_loader = DataLoader(test_dataset, batch_size, shuffle=False)
+        collect_notes = evaluate_beam_predictions(test_loader)
+        org_notes = parse_musicxml(file_path)
+        collect_n = []
+        if(len(collect_notes) == len(org_notes)):
+            for i in range(len(collect_notes)):
+                if((collect_notes[i][0]==org_notes[i][0]) and (collect_notes[i][1]==org_notes[i][1]) and (collect_notes[i][2]==org_notes[i][2])):
+                        collect_n = [1, org_notes[i][0], org_notes[i][1], org_notes[i][2],org_notes[i][3]]
+        return collect_n
 model.train()  # Turns training back on after evalutating
 """
 def note_comparator(file_path):
