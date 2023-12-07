@@ -47,17 +47,22 @@ def parse_musicxml(file_path):
     # Parsing musicXML file to extract features
     score = converter.parse(file_path) # Music21 toolkit to parse mxl/musicXML files
     collection_features = [] # Collection of all note for each note/chord
-   
+    note_withType =[]
     for note in score.flat.notes:
         # Extract features for each note or chord
         if note.isNote: 
-            note_features = [note.measureNumber, note._getMeasureOffset(score), note.pitch.ps, note.duration.quarterLength]
+            note_features = [note.measureNumber, note.beat, note.duration.quarterLength, note.duration.type]
         else: 
-            note_features = [note.measureNumber, note._getMeasureOffset(score), sum(p.midi for p in note.pitches) / len(note.pitches), note.duration.quarterLength]
+            note_features = [note.measureNumber, note.beat, note.duration.quarterLength, note.duration.type]
         # Add beam info to the note features for each note/chord
         note_features.extend(parse_beams(note.beams))
         collection_features.append(note_features)    
-    
+    for i in range(len(collection_features)):
+         if(collection_features[i][3]=='eighth' or collection_features[i][3] =='16th' or collection_features[i][3]=='32nd'):
+                 note_withType.append(collection_features[i])
+    for i in range(len(note_withType)):
+         del note_withType[i][3]   
+    return note_withType
     return collection_features  # Return value to be used in Dataset class
 
 class MusicXMLDataset(Dataset):
@@ -110,9 +115,9 @@ class NBPModel(nn.Module):
 
 
 # Model Parameters
-input_size = 4  # 4 Features(Measure Number,note offset ,Pitch.midi, note duration in int)
-hidden_size = 3  # Hidden State Size, Hidden state of each time step of vector length 6(2/3 size of input + outputsize)
-batch_size = 32  # Large batch size leads to fast to training but lower accuracy. Should be 16,32,64,128
+input_size = 3  # 4 Features(Measure Number,note offset ,Pitch.midi, note duration in int)
+hidden_size = 2  # Hidden State Size, Hidden state of each time step of vector length 6(2/3 size of input + outputsize)
+batch_size = 16  # Large batch size leads to fast to training but lower accuracy. Should be 16,32,64,128
 num_epochs = 4  # Number of times all training data is used once to update parameters. Should be between 1-10
 num_layers = 2  # Stack of layers (i.e. LSTM and Linear)
 learning_rate = 0.001  # Learning rate for optimizers to update paramaters
@@ -128,11 +133,11 @@ optimizer = torch.optim.Adam(model.parameters(), learning_rate) # Best default o
 
 # Create instances of the custom dataset
 train_dataset = MusicXMLDataset(train_folder_path)
-test_dataset = MusicXMLDataset(test_folder_path)
+#test_dataset = MusicXMLDataset(test_folder_path)
 
 # Create data loaders for training and testing
 train_loader = DataLoader(train_dataset, batch_size, shuffle=True)
-test_loader = DataLoader(test_dataset, batch_size, shuffle=False)
+#test_loader = DataLoader(test_dataset, batch_size, shuffle=False)
 
 # Train model using training dataset
 def train_model(num_epochs):
@@ -172,13 +177,25 @@ def evaluate_beam_predictions(input_test_loader):
                 if predictedL.sum() > 0:  # Check to see if there are any beam predictions by taking the sum of all label predictions in the batch
                     for i in range(inputs.size(0)):
                         inputData = inputs[i]
-                        measure, offset, pitch, duration = inputData[:4].tolist() # Collect first 4 elements
-                        beam_predictions.append((measure, offset, pitch, duration)) # Add collected notes data to the collecetion of predictions
+                        measure, beat, duration = inputData[:3].tolist() # Collect first 4 elements
+                        beam_predictions.append((measure, beat, duration)) # Add collected notes data to the collecetion of predictions
         for prediction in beam_predictions: # Iterate through the collection of predictions and print 
-                print(f"Measure: {prediction[0]}, Offset: {prediction[1]}, Pitch: {prediction[2]}, Duration: {prediction[3]} needs a beam.")
+                print(f"Measure: {prediction[0]}, Beat: {prediction[1]}, Duration: {prediction[2]} needs a beam.")
         else:  # If there are no predicted beams
             print("No Beams Have Been Predicted!")
         return beam_predictions 
+def front_ToTrainer(file_path,directory):
+        test_folder_path = directory
+        test_dataset = MusicXMLDataset(test_folder_path)
+        test_loader = DataLoader(test_dataset, batch_size, shuffle=False)
+        collect_notes = evaluate_beam_predictions(test_loader)
+        org_notes = parse_musicxml(file_path)
+        collect_n = []
+        if(len(collect_notes) == len(org_notes)):
+            for i in range(len(collect_notes)):
+                if((collect_notes[i][0]==org_notes[i][0]) and (collect_notes[i][1]==org_notes[i][1]) and (collect_notes[i][2]==org_notes[i][2])):
+                        collect_n = [1, org_notes[i][0], org_notes[i][1], org_notes[i][2],org_notes[i][3]]
+        return collect_n
 model.train()  # Turns training back on after evalutating
 """
 def note_comparator(file_path):
