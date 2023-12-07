@@ -117,7 +117,7 @@ learning_rate = 0.001  # Learning rate for optimizers to update paramaters
 
 # Paths to the training and testing folders
 train_folder_path = "~/CS411-Crystal-CrossFade/Prototype/src/main/Python/edu/odu/cs/cs411/Backend/Correct_Beams" # path to mxl files containing correct beams format
-#test_folder_path = "~/CS411-Crystal-CrossFade/Prototype/src/main/Python/edu/odu/cs/cs411/Backend/Incorrect_Beams" # path to mxl files containing incorrect beams format
+test_folder_path = "~/CS411-Crystal-CrossFade/Prototype/src/main/Python/edu/odu/cs/cs411/Backend/Incorrect_Beams" # path to mxl files containing incorrect beams format
 
 # Instantiate the model and define loss function and optimizer
 model = NBPModel(input_size, hidden_size, num_layers) # Neural Network Model to use sequential data and patterns to predict the most likely scenario
@@ -126,7 +126,7 @@ optimizer = torch.optim.Adam(model.parameters(), learning_rate) # Best default o
 
 # Create instances of the custom dataset
 train_dataset = MusicXMLDataset(train_folder_path)
-#test_dataset = MusicXMLDataset(test_folder_path)
+test_dataset = MusicXMLDataset(test_folder_path)
 
 # Create data loaders for training and testing
 train_loader = DataLoader(train_dataset, batch_size, shuffle=True)
@@ -178,7 +178,7 @@ def evaluate_beam_predictions(input_test_loader):
             print("No Beams Have Been Predicted!")
         return beam_predictions 
 model.train()  # Turns training back on after evalutating
-
+"""
 def note_comparator(file_path):
 
     input_test_data = MusicXMLDataset(file_path)
@@ -203,4 +203,4 @@ def note_comparator(file_path):
         else:
             corrected_list.extend(input_measure_notes)
 
-    return corrected_list
+    return corrected_list """
