@@ -127,6 +127,12 @@ class App(CTkToplevel):
             'Eb': ('D', 'E'),
             'Ab': ('G', 'A')
         }
+        self.beam_type = (
+             'start',
+             'continue',
+             'end'
+        )
+
         self.var_time_signatures = StringVar()
         self.var_keys = StringVar()
         self.var_mode_keys = StringVar(value='minor')
@@ -387,6 +393,8 @@ class App(CTkToplevel):
             pady=5
         )
 
+
+
         self.frame_beams_buttons = CTkFrame(
             self.frame_beams,
             fg_color='transparent'
@@ -413,10 +421,22 @@ class App(CTkToplevel):
             text='Remove Beam',
             font=('Helvetica', 18),
             width=0,
-            command=self.add_beam_clicked
+            command=self.remove_beam_clicked
         ).grid(
             row=0,
             column=1
+        )
+
+        self.beam_menu = CTkOptionMenu(
+            self.frame_beams,
+            values=self.beam_type
+        )
+        
+        self.beam_menu.grid(
+            row=1,
+            column=0,
+            padx=5,
+            pady=10
         )
         #--------------------------------Time Signature Grouping-----------------#
         self.frame_signatures = CTkFrame(
@@ -1334,7 +1354,29 @@ class App(CTkToplevel):
             measure_num (_int_): The number of the measure where the note is located
             note_num (_int_): The number of the note. If there are 5 notes, and the 3rd one must be changed, this number would be 3
         """
-        self.song.add_beams(part_num, measure_num, note_num, start, middle, end)
+
+        part_num, measure_num, note_num = self.get_selected_note()
+        note_dur = self.song.parsed_music.parts[int(part_num)-1].measure(int(measure_num)).notesAndRests[int(note_num)-1].duration.type
+        if note_dur in 'eighth':
+            num_beams = 1
+        elif note_dur in '16th':
+            num_beams = 2
+        elif note_dur in '32nd':
+            num_beams = 3
+
+        if self.beam_menu.get() in 'start':
+            self.song.add_beams(int(part_num), int(measure_num), int(note_num), num_beams, 0, 0)
+        elif self.beam_menu.get() in 'continue':
+            self.song.add_beams(int(part_num), int(measure_num), int(note_num), 0, num_beams, 0)
+        else:
+            self.song.add_beams(int(part_num), int(measure_num), int(note_num), 0, 0, num_beams)
+
+        self.display()
+
+    def remove_beam_clicked(self, part_num=-1, measure_num=-1, note_num=-1):
+        part_num, measure_num, note_num = self.get_selected_note()
+        self.song.remove_beams(int(part_num), int(measure_num), int(note_num))
+        self.display()
 
     # Method to maximize the window
     def maximize(self):
