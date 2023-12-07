@@ -1880,6 +1880,8 @@ class App(CTkToplevel):
         self.display()
 
     def correct_beam_clicked(self):
+        pass
+
 
     # Method to maximize the window
     def maximize(self):
