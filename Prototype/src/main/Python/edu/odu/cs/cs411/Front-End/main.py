@@ -363,12 +363,67 @@ class App(CTkToplevel):
         )
         self.frame_settings.grid_columnconfigure(0, weight=1)
         
+
+        #-----------------------------------Beam Grouping-------------------------#
+        self.frame_beams = CTkFrame(
+            self.frame_settings,
+        )
+        self.frame_beams.grid(
+            row=0,
+            column=0,
+            sticky='NEW',
+            padx=10,
+            pady=10
+        )
+        CTkLabel(
+            self.frame_beams, 
+            text='Beam Corrections', 
+            font=('Helvetica', 18, 'bold')
+        ).grid(
+            row=0,
+            column=0,
+            sticky='NEW',
+            padx=5,
+            pady=5
+        )
+
+        self.frame_beams_buttons = CTkFrame(
+            self.frame_beams,
+            fg_color='transparent'
+        )
+        self.frame_beams_buttons.grid(
+            row=1,
+            column=2,
+            padx=5,
+            pady=10
+        )
+        CTkButton(
+            self.frame_beams_buttons,
+            text='Add Beam',
+            font=('Helvetica', 18),
+            width=0,
+            command=self.add_beam_clicked
+        ).grid(
+            row=0,
+            column=0
+        )
+        
+        CTkButton(
+            self.frame_beams_buttons,
+            text='Remove Beam',
+            font=('Helvetica', 18),
+            width=0,
+            command=self.add_beam_clicked
+        ).grid(
+            row=0,
+            column=1
+        )
         #--------------------------------Time Signature Grouping-----------------#
         self.frame_signatures = CTkFrame(
             self.frame_settings,
         )
         self.frame_signatures.grid(
-            row=0,
+            row=1,
             column=0,
             sticky='NEW',
             padx=10,
@@ -1271,6 +1326,15 @@ class App(CTkToplevel):
             self.get_selected_note()
             self.display()
 
+    def add_beam_clicked(self, part_num=-1, measure_num=-1, note_num=-1):
+        """"Adds Beams To The Selected Notes
+        
+        Args:
+            part_num (_int_): The number of the part where the note is located, where the first part would be 1
+            measure_num (_int_): The number of the measure where the note is located
+            note_num (_int_): The number of the note. If there are 5 notes, and the 3rd one must be changed, this number would be 3
+        """
+        self.song.add_beams(part_num, measure_num, note_num, start, middle, end)
 
     # Method to maximize the window
     def maximize(self):
