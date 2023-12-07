@@ -1879,6 +1879,8 @@ class App(CTkToplevel):
         self.song.remove_beams(int(part_num), int(measure_num), int(note_num))
         self.display()
 
+    def correct_beam_clicked(self):
+
     # Method to maximize the window
     def maximize(self):
         """Maximizes The Window"""
