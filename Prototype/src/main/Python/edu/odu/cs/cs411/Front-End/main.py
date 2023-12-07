@@ -5,7 +5,7 @@ from PIL import Image, ImageTk
 from configparser import ConfigParser
 import os
 import music21 as m21
-from Song import *
+
 
 us = m21.environment.UserSettings()
 us_path = us.getSettingsPath()
@@ -20,15 +20,17 @@ import sys
 sys.path.append('Prototype/src/main/Python/edu/odu/cs/cs411')
 sys.path.append('Prototype/src/main/Python/edu/odu/cs/cs411/Backend')
 
+
 # Import a module from the custom paths
 from Backend.parseMusicXML import parsemusic_XML
+from Song import *
 
 # Define the main application class
-class App(CTk):
+class App(CTkToplevel):
 
     # Constructor for the application
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, master=None):
+        super().__init__(master=master)
 
         # Initialize various variables and settings
         self.song = Song()
@@ -659,6 +661,7 @@ class App(CTk):
             text='Note: None', 
             font=('Helvetica', 16, 'bold'),
             justify = 'center',
+            command = self.get_selected_note,
            anchor="w"
         )
         
