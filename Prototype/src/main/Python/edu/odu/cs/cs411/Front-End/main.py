@@ -5,6 +5,7 @@ from PIL import Image, ImageTk
 from configparser import ConfigParser
 import os
 import music21 as m21
+from Song import *
 
 us = m21.environment.UserSettings()
 us_path = us.getSettingsPath()
@@ -30,6 +31,8 @@ class App(CTk):
         super().__init__(**kwargs)
 
         # Initialize various variables and settings
+        self.song = Song()
+        self.imported = False
         self.var_view_signatures = IntVar(value=1)
         self.var_view_dynamics = IntVar(value=1)
         self.var_view_duration = IntVar(value=1)
@@ -342,7 +345,10 @@ class App(CTk):
  
     # Method to add various settings
     def add_settings(self):
-        self.frame_settings = CTkFrame(self)
+        self.frame_settings = CTkScrollableFrame(
+            self,
+            fg_color = 'transparent'
+        )
         self.frame_settings.grid(
             row=0,
             rowspan=2,
@@ -2109,7 +2115,7 @@ class App(CTk):
                 (
                     self.frame_timeline.winfo_width(), 
                     10e99
-                ), Image.ANTIALIAS
+                ), Image.Resampling.LANCZOS
             )
             self.img_timeline = ImageTk.PhotoImage(img)
             Label(self.canvas_frame, image=self.img_timeline).pack()
