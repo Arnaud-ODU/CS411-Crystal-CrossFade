@@ -44,6 +44,7 @@ class App(CTkToplevel):
         self.var_view_note_select = IntVar(value=1)
         self.configurator = ConfigParser()
         self.title('CrossFade Main Menu')
+        self.help_wraplength = 300  # Width of labels in the help side panel
 
         # Set up menu, time signatures, and keys
         self.add_menu()
@@ -198,12 +199,15 @@ class App(CTkToplevel):
         self.read_config()
         self.add_toolbar()
         self.add_timeline()
+        self.add_help()
         self.after(1, self.maximize)
         self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=3)
 
-        
+    # Method to create the help frame without inserting it
+    def add_help(self):
+        self.frame_help = CTkFrame(self)
 
     # Method to add the toolbar
     def add_toolbar(self):
@@ -294,6 +298,9 @@ class App(CTkToplevel):
             pady=10,
             sticky='EW'
         )
+
+    def add_help(self):
+        self.frame_help = CTkFrame(self)
 
     # Method to add the timeline
     def add_timeline(self):
@@ -503,7 +510,8 @@ class App(CTkToplevel):
             text='pp',
             font=('Kristen ITC', 24, 'bold'),
             text_color='black',
-            width=45
+            width=45,
+            command=lambda:self.dynamics_clicked('pianissimo')
         )
         self.button_pianissimo.grid(
             row=1,
@@ -515,7 +523,8 @@ class App(CTkToplevel):
             text='p',
             font=('Kristen ITC', 24, 'bold'),
             text_color='black',
-            width=45
+            width=45,
+            command=lambda:self.dynamics_clicked('piano')
         )
         self.button_piano.grid(
             row=1,
@@ -527,7 +536,8 @@ class App(CTkToplevel):
             text='mp',
             font=('Kristen ITC', 24, 'bold'),
             text_color='black',
-            width=45
+            width=45,
+            command=lambda:self.dynamics_clicked('mezopiano')
         )
         self.button_mezopiano.grid(
             row=1,
@@ -539,7 +549,8 @@ class App(CTkToplevel):
             text='mf',
             font=('Kristen ITC', 24, 'bold'),
             text_color='black',
-            width=45
+            width=45,
+            command=lambda:self.dynamics_clicked('mezoforte')
         )
         self.button_mezoforte.grid(
             row=1,
@@ -551,7 +562,8 @@ class App(CTkToplevel):
             text='f',
             font=('Kristen ITC', 24, 'bold'),
             text_color='black',
-            width=45
+            width=45,
+            command=lambda:self.dynamics_clicked('forte')
         )
         self.button_forte.grid(
             row=1,
@@ -563,7 +575,8 @@ class App(CTkToplevel):
             text='ff',
             font=('Kristen ITC', 24, 'bold'),
             text_color='black',
-            width=45
+            width=45,
+            command=lambda:self.dynamics_clicked('fortissimo')
         )
         self.button_fortissimo.grid(
             row=1,
@@ -1081,7 +1094,7 @@ class App(CTkToplevel):
         self.dropdown_keys_mode = CTkOptionMenu(
             self.frame_key,
             values=('minor', 'major'),
-            command=self.keys_mode_clicked,
+            #command=self.keys_mode_clicked,
             variable=self.var_mode_keys
         )
         self.dropdown_keys_mode.grid(
@@ -1209,36 +1222,276 @@ class App(CTkToplevel):
             self.var_transpose.set(
                 self.d_major[self.var_transpose.get()][0]
             )
+            # Method that clears and displays the help side panel
+    def display_help(self):
+        for child in self.frame_help.winfo_children():
+            child.grid_forget()
+        self.frame_help.grid(
+            row=0,
+            rowspan=2, 
+            column=2,
+            sticky='NSEW'
+        )
+
+    def dynamics_clicked(self, type):
+        self.show_dynamics_help()
+
+    def show_dynamics_help(self):
+        self.display_help()
+        CTkLabel(
+            self.frame_help,
+            text='Steps to Change Dynamics:',
+            font=('Helvetica', 16, 'bold')
+        ).grid(
+            row=0, 
+            column=0,
+            padx=10,
+            pady=10
+        )
+        CTkLabel(
+            self.frame_help,
+            text='1.Selecting a Note or Passage:',
+            font=('Helvetica', 14, 'bold')
+        ).grid(
+            row=1, 
+            column=0,
+            padx=10,
+        )
+        CTkLabel(
+            self.frame_help,
+            text='Click on a single note or drag across a range of notes where you want to apply dynamic changes.',
+            font=('Helvetica', 12),
+            wraplength=self.help_wraplength
+        ).grid(
+            row=2, 
+            column=0,
+            padx=10,
+        )
+        CTkLabel(
+            self.frame_help,
+            text='2.Accessing Dynamics Options:',
+            font=('Helvetica', 14, 'bold')
+        ).grid(
+            row=3, 
+            column=0,
+            padx=10,
+            pady=(10,0)
+        )
+        CTkLabel(
+            self.frame_help,
+            text='Right-click on the selected note(s) or use the toolbar menu to open the dynamics options.',
+            font=('Helvetica', 12),
+            wraplength=self.help_wraplength
+        ).grid(
+            row=4, 
+            column=0,
+            padx=10,
+        )
+        CTkLabel(
+            self.frame_help,
+            text='3.Applying Dynamics:',
+            font=('Helvetica', 14, 'bold')
+        ).grid(
+            row=5, 
+            column=0,
+            padx=10,
+            pady=(10,0),
+        )
+        CTkLabel(
+            self.frame_help,
+            text='Choose from fortissimo (ff) for very loud, forte (f) for loud, mezzo-forte (mf) for moderately loud, mezzo-piano (mp) for moderately quiet, piano (p) for quiet , pianissimo (pp) for very quiet. Click on the desired dynamic symbol to apply it to the selected notes.',
+            font=('Helvetica', 12),
+            wraplength=self.help_wraplength
+        ).grid(
+            row=6, 
+            column=0,
+            padx=10,
+        )
+        CTkLabel(
+            self.frame_help,
+            text='3.Applying Dynamics:',
+            font=('Helvetica', 14, 'bold')
+        ).grid(
+            row=7, 
+            column=0,
+            padx=10,
+            pady=(10,0),
+        )
+        CTkLabel(
+            self.frame_help,
+            text='Choose from fortissimo (ff) for very loud, forte (f) for loud, mezzo-forte (mf) for moderately loud, mezzo-piano (mp) for moderately quiet, piano (p) for quiet , pianissimo (pp) for very quiet. Click on the desired dynamic symbol to apply it to the selected notes.',
+            font=('Helvetica', 12),
+            wraplength=self.help_wraplength
+        ).grid(
+            row=8, 
+            column=0,
+            padx=10,
+        )
+        CTkLabel(
+            self.frame_help,
+            text='4.Editing Existing Dynamics:',
+            font=('Helvetica', 14, 'bold')
+        ).grid(
+            row=9, 
+            column=0,
+            padx=10,
+            pady=(10,0),
+        )
+        CTkLabel(
+            self.frame_help,
+            text='Click on an existing dynamic marking to select it. Use the pop-up editor to change the dynamic type or delete it.',
+            font=('Helvetica', 12),
+            wraplength=self.help_wraplength
+        ).grid(
+            row=10, 
+            column=0,
+            padx=10,
+        )
+        CTkLabel(
+            self.frame_help,
+            text='5.Playback to Review:',
+            font=('Helvetica', 14, 'bold')
+        ).grid(
+            row=11, 
+            column=0,
+            padx=10,
+            pady=(10,0),
+        )
+        CTkLabel(
+            self.frame_help,
+            text='Use the playback feature to listen to how the dynamics affect your music.',
+            font=('Helvetica', 12),
+            wraplength=self.help_wraplength
+        ).grid(
+            row=12, 
+            column=0,
+            padx=10,
+        )
+
+        # methods for various dropdown menus
+    def time_signature_clicked(self, choice):
+        self.display_help()
+        CTkLabel(
+            self.frame_help,
+            text='Steps to Change Time Signature:',
+            font=('Helvetica', 16, 'bold')
+        ).grid(
+            row=0, 
+            column=0,
+            padx=10,
+            pady=10
+        )
+        CTkLabel(
+            self.frame_help,
+            text='1.Accessing the Time Signature Options:',
+            font=('Helvetica', 14, 'bold')
+        ).grid(
+            row=1, 
+            column=0,
+            padx=10,
+        )
+        CTkLabel(
+            self.frame_help,
+            text='Locate the time signature on your score. This is usually at the beginning of the piece. Click on the current time signature or use the toolbar menu to open the time signature options.',
+            font=('Helvetica', 12),
+            wraplength=self.help_wraplength
+        ).grid(
+            row=2, 
+            column=0,
+            padx=10,
+        )
+        CTkLabel(
+            self.frame_help,
+            text='2.Understanding Time Signature Options:',
+            font=('Helvetica', 14, 'bold')
+        ).grid(
+            row=3, 
+            column=0,
+            padx=10,
+            pady=(10,0)
+        )
+        CTkLabel(
+            self.frame_help,
+            text='The top number indicates how many beats are in each measure, and the bottom number shows which note value represents one beat.',
+            font=('Helvetica', 12),
+            wraplength=self.help_wraplength
+        ).grid(
+            row=4, 
+            column=0,
+            padx=10,
+        )
+        CTkLabel(
+            self.frame_help,
+            text='3.Selecting a New Time Signature:',
+            font=('Helvetica', 14, 'bold')
+        ).grid(
+            row=5, 
+            column=0,
+            padx=10,
+            pady=(10,0),
+        )
+        CTkLabel(
+            self.frame_help,
+            text='Scroll through the dropdown menu to find the time signature you wish to use.',
+            font=('Helvetica', 12),
+            wraplength=self.help_wraplength
+        ).grid(
+            row=6, 
+            column=0,
+            padx=10,
+        )
+        CTkLabel(
+            self.frame_help,
+            text='4.Applying the Selected Time Signature:',
+            font=('Helvetica', 14, 'bold')
+        ).grid(
+            row=7, 
+            column=0,
+            padx=10,
+            pady=(10,0),
+        )
+        CTkLabel(
+            self.frame_help,
+            text='Click on your chosen time signature to select it. The new time signature will be applied to your score, starting from the current position or the beginning of the next measure.',
+            font=('Helvetica', 12),
+            wraplength=self.help_wraplength
+        ).grid(
+            row=8, 
+            column=0,
+            padx=10,
+        )
 
     # Placeholder method for slider dynamics moved
     def slider_dynamics_moved(self):
         pass
 
-    # methods for various dropdown menus
-    def time_signature_clicked(self, choice):
-        pass
-
     def whole_clicked(self):
+        self.show_dynamics_help()
         part_num, measure_num, note_num = self.get_selected_note()
         self.change_duration(int(part_num), int(measure_num), int(note_num), length='whole')
 
     def half_clicked(self):
+        self.show_dynamics_help()
         part_num, measure_num, note_num = self.get_selected_note()
         self.change_duration(int(part_num), int(measure_num), int(note_num), length='half')
 
     def quarter_clicked(self):
+        self.show_dynamics_help()
         part_num, measure_num, note_num = self.get_selected_note()
         self.change_duration(int(part_num), int(measure_num), int(note_num), length='quarter')
 
     def eighth_clicked(self):
+        self.show_dynamics_help()
         part_num, measure_num, note_num = self.get_selected_note()
         self.change_duration(int(part_num), int(measure_num), int(note_num), length='eighth')
     
     def sixteenth_clicked(self):
+        self.show_dynamics_help()
         part_num, measure_num, note_num = self.get_selected_note()
         self.change_duration(int(part_num), int(measure_num), int(note_num), length='16th')
     
     def thirtysecond_clicked(self):
+        self.show_dynamics_help()
         part_num, measure_num, note_num = self.get_selected_note()
         self.change_duration(int(part_num), int(measure_num), int(note_num), length='32nd')
 
@@ -1252,23 +1505,262 @@ class App(CTkToplevel):
                 values=self.major_keys
             )
         self.var_transpose.set('')
+        self.show_transpose_help()
     
     def transpose_clicked(self, choice):
-        pass
+        self.show_transpose_help()
+
+    def show_transpose_help(self):
+        self.display_help()
+        CTkLabel(
+            self.frame_help,
+            text='Steps to Transpose :',
+            font=('Helvetica', 16, 'bold')
+        ).grid(
+            row=0, 
+            column=0,
+            padx=10,
+            pady=10
+        )
+        CTkLabel(
+            self.frame_help,
+            text='1.Understanding the Interface:',
+            font=('Helvetica', 14, 'bold')
+        ).grid(
+            row=1, 
+            column=0,
+            padx=10,
+        )
+        CTkLabel(
+            self.frame_help,
+            text='The first dropdown menu displays the current key of your piece. The second dropdown menu allows you to choose between major and minor keys. The up/down arrows are used for making semitone adjustments.',
+            font=('Helvetica', 12),
+            wraplength=self.help_wraplength
+        ).grid(
+            row=2, 
+            column=0,
+            padx=10,
+        )
+        CTkLabel(
+            self.frame_help,
+            text='2.Selecting the Current Key:',
+            font=('Helvetica', 14, 'bold')
+        ).grid(
+            row=3, 
+            column=0,
+            padx=10,
+            pady=(10,0)
+        )
+        CTkLabel(
+            self.frame_help,
+            text='Use the first dropdown menu to confirm the current key of your piece. If unsure, leave it as is; Crossfade will detect the key automatically.',
+            font=('Helvetica', 12),
+            wraplength=self.help_wraplength
+        ).grid(
+            row=4, 
+            column=0,
+            padx=10,
+        )
+        CTkLabel(
+            self.frame_help,
+            text='3.Choosing Major or Minor:',
+            font=('Helvetica', 14, 'bold')
+        ).grid(
+            row=5, 
+            column=0,
+            padx=10,
+            pady=(10,0),
+        )
+        CTkLabel(
+            self.frame_help,
+            text="Select whether the piece is in a major or minor key using the second dropdown menu.",
+            font=('Helvetica', 12),
+            wraplength=self.help_wraplength
+        ).grid(
+            row=6, 
+            column=0,
+            padx=10,
+        )
+        CTkLabel(
+            self.frame_help,
+            text='4.Transposing by Semitones:',
+            font=('Helvetica', 14, 'bold')
+        ).grid(
+            row=7, 
+            column=0,
+            padx=10,
+            pady=(10,0),
+        )
+        CTkLabel(
+            self.frame_help,
+            text='Click the up arrow to transpose the music up by one semitone. Click the down arrow to transpose down by one semitone. Each click changes the key in the first dropdown menu accordingly.',
+            font=('Helvetica', 12),
+            wraplength=self.help_wraplength
+        ).grid(
+            row=8, 
+            column=0,
+            padx=10,
+        )
+        CTkLabel(
+            self.frame_help,
+            text='5.Confirming the Transposition:',
+            font=('Helvetica', 14, 'bold')
+        ).grid(
+            row=9, 
+            column=0,
+            padx=10,
+            pady=(10,0),
+        )
+        CTkLabel(
+            self.frame_help,
+            text='After adjusting, review the new key displayed in the first dropdown menu. Your music will automatically be transposed to this new key.',
+            font=('Helvetica', 12),
+            wraplength=self.help_wraplength
+        ).grid(
+            row=10, 
+            column=0,
+            padx=10,
+        )
+        CTkLabel(
+            self.frame_help,
+            text='6.Playback and Review:',
+            font=('Helvetica', 14, 'bold')
+        ).grid(
+            row=11, 
+            column=0,
+            padx=10,
+            pady=(10,0),
+        )
+        CTkLabel(
+            self.frame_help,
+            text='Use the playback feature to listen to your transposed music and ensure it sounds as expected.',
+            font=('Helvetica', 12),
+            wraplength=self.help_wraplength
+        ).grid(
+            row=12, 
+            column=0,
+            padx=10,
+        )
+
 
     def keys_clicked(self, choice):
         pass
 
-    def keys_mode_clicked(self, choice):
-        if choice == 'minor':
-            self.dropdown_keys.configure(
-                values=self.minor_keys
-            )
-        elif choice == 'major':
-            self.dropdown_keys.configure(
-                values=self.major_keys
-            )
-        self.var_keys.set('')
+    def keys_clicked(self, choice):
+        self.show_keys_help()
+
+    def show_keys_help(self):
+        self.display_help()
+        CTkLabel(
+            self.frame_help,
+            text='Steps to Change Key Signature:',
+            font=('Helvetica', 16, 'bold')
+        ).grid(
+            row=0, 
+            column=0,
+            padx=10,
+            pady=10
+        )
+        CTkLabel(
+            self.frame_help,
+            text='1.Accessing Key Signature Options:',
+            font=('Helvetica', 14, 'bold')
+        ).grid(
+            row=1, 
+            column=0,
+            padx=10,
+        )
+        CTkLabel(
+            self.frame_help,
+            text='Find the key signature in your score, usually located at the beginning of the piece. Click on the key signature or use the toolbar menu to open the key signature options ',
+            font=('Helvetica', 12),
+            wraplength=self.help_wraplength
+        ).grid(
+            row=2, 
+            column=0,
+            padx=10,
+        )
+        CTkLabel(
+            self.frame_help,
+            text='2.Selecting a Key:',
+            font=('Helvetica', 14, 'bold')
+        ).grid(
+            row=3, 
+            column=0,
+            padx=10,
+            pady=(10,0)
+        )
+        CTkLabel(
+            self.frame_help,
+            text='The first dropdown menu lists all available keys Scroll through and select the key that you wish to use for your composition.',
+            font=('Helvetica', 12),
+            wraplength=self.help_wraplength
+        ).grid(
+            row=4, 
+            column=0,
+            padx=10,
+        )
+        CTkLabel(
+            self.frame_help,
+            text='3.Choosing Major or Minor:',
+            font=('Helvetica', 14, 'bold')
+        ).grid(
+            row=5, 
+            column=0,
+            padx=10,
+            pady=(10,0),
+        )
+        CTkLabel(
+            self.frame_help,
+            text="The second dropdown menu allows you to select 'Major' or 'Minor'. This choice determines the mood and tonal quality of your piece — major keys generally sound bright and happy, while minor keys often have a more somber tone.",
+            font=('Helvetica', 12),
+            wraplength=self.help_wraplength
+        ).grid(
+            row=6, 
+            column=0,
+            padx=10,
+        )
+        CTkLabel(
+            self.frame_help,
+            text='4.Applying the Key Signature:',
+            font=('Helvetica', 14, 'bold')
+        ).grid(
+            row=7, 
+            column=0,
+            padx=10,
+            pady=(10,0),
+        )
+        CTkLabel(
+            self.frame_help,
+            text='After selecting the key and choosing between major and minor, the new key signature will be applied to your score.',
+            font=('Helvetica', 12),
+            wraplength=self.help_wraplength
+        ).grid(
+            row=8, 
+            column=0,
+            padx=10,
+        )
+        CTkLabel(
+            self.frame_help,
+            text='5.Reviewing the Score:',
+            font=('Helvetica', 14, 'bold')
+        ).grid(
+            row=9, 
+            column=0,
+            padx=10,
+            pady=(10,0),
+        )
+        CTkLabel(
+            self.frame_help,
+            text='After applying the new key signature, review your score to ensure the notes are correctly adjusted to the new key.',
+            font=('Helvetica', 12),
+            wraplength=self.help_wraplength
+        ).grid(
+            row=10, 
+            column=0,
+            padx=10,
+        )
+
 
     def change_pitch_clicked(self, part_num=-1, measure_num=-1, note_num=-1, new_pitch='C4'):
         """Change A Note In The Parsed Music
