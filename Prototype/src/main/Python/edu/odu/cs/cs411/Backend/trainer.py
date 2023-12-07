@@ -80,14 +80,14 @@ class MusicXMLDataset(Dataset):
 
     def __getitem__(self, idx):
         data_item = self.data[idx]
-        inputs = data_item[:4] # Use the first four as input [Measure Number, Note Offset, Note pitch, Note Duration]
+        inputs = data_item[:3] # Use the first four as input [Measure Number, Note Offset, Note pitch, Note Duration]
         # The Beam information will be used as labels for the note information. Labels will be 1 for beam and 0 for no beam.
-        if int(data_item[4] > 0):  # If Beam 'Start' is 1, make label as 1.
+        if int(data_item[3] > 0):  # If Beam 'Start' is 1, make label as 1.
             label = torch.tensor(int(data_item[4] > 0), dtype=torch.float32)       
-        elif int(data_item[5] > 0): # If Beam 'Continue' is 2, make label as 1.
-            label = torch.tensor(1, dtype=torch.float32)          
-        elif int(data_item[6] > 0): #If Beam 'Stop' is 3, make label as 1
-             label = torch.tensor(1, dtype=torch.float32)
+      #  elif int(data_item[5] > 0): # If Beam 'Continue' is 2, make label as 1.
+           # label = torch.tensor(1, dtype=torch.float32)          
+       # elif int(data_item[6] > 0): #If Beam 'Stop' is 3, make label as 1
+           #  label = torch.tensor(1, dtype=torch.float32)
         else:                       # Else make label as 0.
             label = torch.tensor(0,dtype=torch.float32)
         #print(inputs, label)                                 
@@ -191,11 +191,13 @@ def front_ToTrainer(file_path,directory):
         collect_notes = evaluate_beam_predictions(test_loader)
         org_notes = parse_musicxml(file_path)
         collect_n = []
+        final_coll = []
         if(len(collect_notes) == len(org_notes)):
             for i in range(len(collect_notes)):
                 if((collect_notes[i][0]==org_notes[i][0]) and (collect_notes[i][1]==org_notes[i][1]) and (collect_notes[i][2]==org_notes[i][2])):
-                        collect_n = [1, org_notes[i][0], org_notes[i][1], org_notes[i][2],org_notes[i][3]]
-        return collect_n
+                        collect_n = [1, org_notes[i][0], org_notes[i][1],org_notes[i][3]]
+                final_coll.append(collect_n)
+        return final_coll
 model.train()  # Turns training back on after evalutating
 """
 def note_comparator(file_path):
