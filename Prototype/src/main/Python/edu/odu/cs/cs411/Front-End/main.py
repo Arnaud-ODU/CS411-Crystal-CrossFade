@@ -433,7 +433,16 @@ class App(CTkToplevel):
             row=0,
             column=1
         )
-
+        CTkButton(
+            self.frame_beams_buttons,
+            text='Correct Beams',
+            font=('Helvetica', 18),
+            width=0,
+            command=self.correct_beam_clicked
+        ).grid(
+            row=0,
+            column=2
+        )
         self.beam_menu = CTkOptionMenu(
             self.frame_beams,
             values=self.beam_type
