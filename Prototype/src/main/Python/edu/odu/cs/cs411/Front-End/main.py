@@ -627,6 +627,7 @@ class App(CTkToplevel):
 
         self.frame_pitch_buttons = CTkFrame(
             self.frame_pitch,
+            fg_color='transparent'
         )
         self.frame_pitch_buttons.grid(
             row=1,
@@ -672,6 +673,27 @@ class App(CTkToplevel):
             command=self.change_pitch_clicked
         ).grid(
             row=3,
+            column=0
+        )
+
+        CTkButton(
+            self.frame_pitch_buttons,
+            text='▲',
+            font=('Helvetica', 25),
+            width=0,
+            command=self.increment_pitch_clicked
+        ).grid(
+            row=0,
+            column=0
+        )
+        CTkButton(
+            self.frame_pitch_buttons,
+            text='▼',
+            font=('Helvetica', 25),
+            width=0,
+            command=self.decrement_pitch_clicked
+        ).grid(
+            row=1,
             column=0
         )
         #------------------------------Key Grouping------------------------------#
@@ -1113,6 +1135,35 @@ class App(CTkToplevel):
             self.song.change_note_pitch(int(part_num), int(measure_num), int(note_num), new_pitch)
             self.get_selected_note() #Reselects The Modified Note (Avoids Null Pointer Exception)
             self.display()
+
+    def increment_pitch_clicked(self, part_num=-1, measure_num=-1, note_num=-1):
+        """Increase a Note By A Semitone (Halfstep) ex: C4 -> C#4
+
+        Args:
+            part_num (_int_): The number of the part where the note is located, where the first part would be 1
+            measure_num (_int_): The number of the measure where the note is located
+            note_num (_int_): The number of the note. If there are 5 notes, and the 3rd one must be changed, this number would be 3
+        """
+        part_num, measure_num, note_num = self.get_selected_note()
+        if part_num is not -1 and measure_num is not -1 and note_num is not -1:
+            self.song.increase_pitch_by_semitone(int(part_num), int(measure_num), int(note_num))
+            self.get_selected_note() #Reselects The Modified Note (Avoids Null Pointer Exception)
+            self.display()
+
+    def decrement_pitch_clicked(self, part_num=-1, measure_num=-1, note_num=-1):
+        """decrease a Note By A Semitone (Halfstep) ex C4 -> Cb4
+
+        Args:
+            part_num (_int_): The number of the part where the note is located, where the first part would be 1
+            measure_num (_int_): The number of the measure where the note is located
+            note_num (_int_): The number of the note. If there are 5 notes, and the 3rd one must be changed, this number would be 3
+        """
+        part_num, measure_num, note_num = self.get_selected_note()
+        if part_num is not -1 and measure_num is not -1 and note_num is not -1:
+            self.song.decrease_pitch_by_semitone(int(part_num), int(measure_num), int(note_num))
+            self.get_selected_note() #Reselects The Modified Note (Avoids Null Pointer Exception)
+            self.display()
+
 
     # Method to maximize the window
     def maximize(self):
