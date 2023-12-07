@@ -501,362 +501,12 @@ class App(CTkToplevel):
             pady=10
         )
         
-        #-------------------------------Duration Grouping--------------------------#
-        self.frame_notes = CTkFrame(
-            self.frame_settings,
-        )
-        self.frame_notes.grid(
-            row=3,
-            column=0,
-            sticky='NEW',
-            padx=10,
-            pady=10
-        )
-
-        self.frame_notes.grid_columnconfigure((0,1,2,3,4,5), weight=1)
-        CTkLabel(
-            self.frame_notes, 
-            text='Notes Duration', 
-            font=('Helvetica', 18, 'bold')
-        ).grid(
-            row=0,
-            column=0,
-            columnspan=6,
-            sticky='NEW',
-            padx=5,
-            pady=5
-        )
-        self.button_wholenote = CTkButton(
-            self.frame_notes, 
-            image=self.img_wholenote,
-            text='',
-            width=1,
-            command=self.whole_clicked
-        )
-        self.button_wholenote.grid(
-            row=1,
-            column=0,
-            pady=10
-        )
-        self.button_halfnote = CTkButton(
-            self.frame_notes, 
-            image=self.img_halfnote,
-            text='',
-            width=1,
-            command=self.half_clicked
-        )
-        self.button_halfnote.grid(
-            row=1,
-            column=1,
-            pady=10
-        )
-        self.button_quarternote = CTkButton(
-            self.frame_notes, 
-            image=self.img_quarternote,
-            text='',
-            width=1,
-            command=self.quarter_clicked
-        )
-        self.button_quarternote.grid(
-            row=1,
-            column=2,
-            pady=10
-        )
-        self.button_eighthnote = CTkButton(
-            self.frame_notes, 
-            image=self.img_eighthnote,
-            text='',
-            width=1,
-            command=self.eighth_clicked
-        )
-        self.button_eighthnote.grid(
-            row=1,
-            column=3,
-            pady=10
-        )
-        self.button_sixteenthnote = CTkButton(
-            self.frame_notes, 
-            image=self.img_sixteenthnote,
-            text='',
-            width=1,
-            command=self.sixteenth_clicked
-        )
-        self.button_sixteenthnote.grid(
-            row=1,
-            column=4,
-            pady=10
-        )
-        self.button_thirtysecondnote = CTkButton(
-            self.frame_notes, 
-            image=self.img_thirtysecondnote,
-            text='',
-            width=1,
-            command=self.thirtysecond_clicked
-        )#MARKER
-        self.button_thirtysecondnote.grid(
-            row=1,
-            column=5,
-            pady=10
-        )
-        
-        #------------------------------Pitch Grouping----------------------------#
-        self.frame_pitch = CTkFrame(
-            self.frame_settings,
-        )
-        self.frame_pitch.grid(
-            row=4,
-            column=0,
-            sticky='NEW',
-            padx=10,
-            pady=10
-        )
-       
-        self.frame_pitch.grid_columnconfigure((0,1,2), weight=1)
-        CTkLabel(
-            self.frame_pitch, 
-            text='Notes Pitch', 
-            font=('Helvetica', 18, 'bold')
-        ).grid(
-            row=0,
-            column=0,
-            columnspan=3,
-            sticky='NEW',
-            padx=5,
-            pady=5
-        )
-
-        self.frame_pitch_buttons = CTkFrame(
-            self.frame_pitch,
-            fg_color='transparent'
-        )
-        self.frame_pitch_buttons.grid(
-            row=1,
-            column=3,
-            padx=5,
-            pady=10
-        )
-
-
-        self.octive_entry = CTkEntry(
-            self.frame_pitch,    
-            placeholder_text='Octive',
-            placeholder_text_color='grey',
-            width=80,
-            height=10,
-            fg_color='dark blue',
-            justify='center'
-        )
-        self.octive_entry.grid(
-            row=1,
-            column=0
-        )
-       
-        self.letter_entry = CTkEntry(
-            self.frame_pitch,    
-            placeholder_text='Note Name',
-            placeholder_text_color='grey',
-            width=80,
-            height=10,
-            fg_color='dark blue',
-            justify='center'
-        )
-        self.letter_entry.grid(
-            row=1,
-            column=2
-        )
-
-        CTkButton(
-            self.frame_pitch_buttons,
-            text='Change Pitch',
-            font=('Helvetica', 18),
-            width=0,
-            command=self.change_pitch_clicked
-        ).grid(
-            row=3,
-            column=0
-        )
-
-        CTkButton(
-            self.frame_pitch_buttons,
-            text='▲',
-            font=('Helvetica', 25),
-            width=0,
-            command=self.increment_pitch_clicked
-        ).grid(
-            row=0,
-            column=0
-        )
-        CTkButton(
-            self.frame_pitch_buttons,
-            text='▼',
-            font=('Helvetica', 25),
-            width=0,
-            command=self.decrement_pitch_clicked
-        ).grid(
-            row=1,
-            column=0
-        )
-        #------------------------------Key Grouping------------------------------#
-        self.frame_key = CTkFrame(
-            self.frame_settings,
-        )
-        self.frame_key.grid(
-            row=5,
-            column=0,
-            sticky='NEW',
-            padx=10,
-            pady=10
-        )
-
-        self.frame_key.grid_columnconfigure((0,1), weight=1)
-        CTkLabel(
-            self.frame_key, 
-            text='Change key', 
-            font=('Helvetica', 18, 'bold')
-        ).grid(
-            row=0,
-            column=0,
-            columnspan=2,
-            sticky='NEW',
-            padx=5,
-            pady=(5,0)
-        )
-        CTkLabel(
-            self.frame_key, 
-            text='(without moving the notes)', 
-            font=('Helvetica', 12),
-            text_color='grey'
-        ).grid(
-            row=1,
-            column=0,
-            columnspan=2,
-            sticky='NEW',
-            padx=5,
-            pady=(0,5)
-        )
-        self.dropdown_keys = CTkOptionMenu(
-            self.frame_key,
-            values=self.minor_keys,
-            command=self.keys_clicked,
-            variable=self.var_keys
-        )
-        self.dropdown_keys.grid(
-            row=2,
-            column=0,
-            padx=5,
-            pady=10
-        )
-        self.dropdown_keys_mode = CTkOptionMenu(
-            self.frame_key,
-            values=('minor', 'major'),
-            command=self.keys_mode_clicked,
-            variable=self.var_mode_keys
-        )
-        self.dropdown_keys_mode.grid(
-            row=2,
-            column=1,
-            padx=5,
-            pady=10
-        )
-        
-        #----------------------------Transpose Grouping---------------------------#
-        self.frame_transpose = CTkFrame(
-            self.frame_settings,
-        )
-        self.frame_transpose.grid(
-            row=6,
-            column=0,
-            sticky='NEW',
-            padx=10,
-            pady=10
-        )
-
-        self.frame_transpose.grid_columnconfigure((0,1,2), weight=1)
-        CTkLabel(
-            self.frame_transpose, 
-            text='Transpose', 
-            font=('Helvetica', 18, 'bold')
-        ).grid(
-            row=0,
-            column=0,
-            columnspan=3,
-            sticky='NEW',
-            padx=5,
-            pady=(5,0)
-        )
-        CTkLabel(
-            self.frame_transpose, 
-            text='(change key and move the notes)', 
-            font=('Helvetica', 12),
-            text_color='grey'
-        ).grid(
-            row=1,
-            column=0,
-            columnspan=3,
-            sticky='NEW',
-            padx=5,
-            pady=(0,5)
-        )
-        self.dropdown_transpose = CTkOptionMenu(
-            self.frame_transpose,
-            values=self.minor_keys,
-            command=self.transpose_clicked,
-            variable=self.var_transpose
-        )
-        self.dropdown_transpose.grid(
-            row=2,
-            column=0,
-            padx=5,
-            pady=10
-        )
-        self.dropdown_transpose_mode = CTkOptionMenu(
-            self.frame_transpose,
-            values=('minor', 'major'),
-            command=self.transpose_mode_clicked,
-            variable=self.var_transpose_mode
-        )
-        self.dropdown_transpose_mode.grid(
-            row=2,
-            column=1,
-            padx=5,
-            pady=10
-        )
-        self.frame_transpose_buttons = CTkFrame(
-            self.frame_transpose,
-        )
-        self.frame_transpose_buttons.grid(
-            row=2,
-            column=2,
-            padx=5,
-            pady=10
-        )
-        CTkButton(
-            self.frame_transpose_buttons,
-            text='▲',
-            font=('Helvetica', 25),
-            width=0,
-            command=self.increment_transpose
-        ).grid(
-            row=0,
-            column=0
-        )
-        CTkButton(
-            self.frame_transpose_buttons,
-            text='▼',
-            font=('Helvetica', 25),
-            width=0,
-            command=self.decrement_transpose
-        ).grid(
-            row=1,
-            column=0
-        )
-
-        #----------------------------Note Select Grouping---------------------------#
+                #----------------------------Note Select Grouping---------------------------#
         self.frame_note_select = CTkFrame(
             self.frame_settings,
         )
         self.frame_note_select.grid(
-            row=7,
+            row=3,
             column=0,
             sticky='NEW',
             padx=10,
@@ -889,48 +539,6 @@ class App(CTkToplevel):
             padx=5,
             pady=(0,5)
         )
-        #CTkLabel(
-        #    self.frame_note_select, 
-        #    text='        Line', 
-        #    font=('Helvetica', 12, 'bold'),
-        #    justify = 'center',
-        #    anchor="w"
-        #).grid(
-        #    row=2,
-        #    column=0,
-        #    columnspan=3,
-        #    sticky='NEW',
-        #    padx=5,
-        #    pady=(5,0)
-        #)
-        #CTkLabel(
-        #    self.frame_note_select, 
-        #    text='Measure', 
-        #    font=('Helvetica', 12, 'bold'),
-        #    justify='center',
-        #    anchor='w'
-        #).grid(
-        #    row=2,
-        #    column=1,
-        #    columnspan=3,
-        #    sticky='NEW',
-        #    padx=5,
-        #    pady=(5,0)
-        #)
-        #CTkLabel(
-        #    self.frame_note_select, 
-        #    text='Note', 
-        #    font=('Helvetica', 12, 'bold'),
-        #    justify='center',
-        #    anchor='w'
-        #).grid(
-        #    row=2,
-        #    column=2,
-        #    columnspan=3,
-        #    sticky='NEW',
-        #    padx=0,
-        #    pady=(5,0)
-        #)
 
         self.frame_note_select_buttons = CTkFrame(
             self.frame_note_select,
@@ -1030,10 +638,360 @@ class App(CTkToplevel):
             column=0
         )
 
-        
+        #-------------------------------Add/Remove Note----------------------------#
 
-        #self.place_textbox = Entry(width=30).place(x=50, y=290)
-        #MARKER
+        #row=4
+        #-------------------------------Duration Grouping--------------------------#
+        self.frame_notes = CTkFrame(
+            self.frame_settings,
+        )
+        self.frame_notes.grid(
+            row=5,
+            column=0,
+            sticky='NEW',
+            padx=10,
+            pady=10
+        )
+
+        self.frame_notes.grid_columnconfigure((0,1,2,3,4,5), weight=1)
+        CTkLabel(
+            self.frame_notes, 
+            text='Notes Duration', 
+            font=('Helvetica', 18, 'bold')
+        ).grid(
+            row=0,
+            column=0,
+            columnspan=6,
+            sticky='NEW',
+            padx=5,
+            pady=5
+        )
+        self.button_wholenote = CTkButton(
+            self.frame_notes, 
+            image=self.img_wholenote,
+            text='',
+            width=1,
+            command=self.whole_clicked
+        )
+        self.button_wholenote.grid(
+            row=1,
+            column=0,
+            pady=10
+        )
+        self.button_halfnote = CTkButton(
+            self.frame_notes, 
+            image=self.img_halfnote,
+            text='',
+            width=1,
+            command=self.half_clicked
+        )
+        self.button_halfnote.grid(
+            row=1,
+            column=1,
+            pady=10
+        )
+        self.button_quarternote = CTkButton(
+            self.frame_notes, 
+            image=self.img_quarternote,
+            text='',
+            width=1,
+            command=self.quarter_clicked
+        )
+        self.button_quarternote.grid(
+            row=1,
+            column=2,
+            pady=10
+        )
+        self.button_eighthnote = CTkButton(
+            self.frame_notes, 
+            image=self.img_eighthnote,
+            text='',
+            width=1,
+            command=self.eighth_clicked
+        )
+        self.button_eighthnote.grid(
+            row=1,
+            column=3,
+            pady=10
+        )
+        self.button_sixteenthnote = CTkButton(
+            self.frame_notes, 
+            image=self.img_sixteenthnote,
+            text='',
+            width=1,
+            command=self.sixteenth_clicked
+        )
+        self.button_sixteenthnote.grid(
+            row=1,
+            column=4,
+            pady=10
+        )
+        self.button_thirtysecondnote = CTkButton(
+            self.frame_notes, 
+            image=self.img_thirtysecondnote,
+            text='',
+            width=1,
+            command=self.thirtysecond_clicked
+        )#MARKER
+        self.button_thirtysecondnote.grid(
+            row=1,
+            column=5,
+            pady=10
+        )
+        
+        #------------------------------Pitch Grouping----------------------------#
+        self.frame_pitch = CTkFrame(
+            self.frame_settings,
+        )
+        self.frame_pitch.grid(
+            row=6,
+            column=0,
+            sticky='NEW',
+            padx=10,
+            pady=10
+        )
+       
+        self.frame_pitch.grid_columnconfigure((0,1,2), weight=1)
+        CTkLabel(
+            self.frame_pitch, 
+            text='Notes Pitch', 
+            font=('Helvetica', 18, 'bold')
+        ).grid(
+            row=0,
+            column=0,
+            columnspan=3,
+            sticky='NEW',
+            padx=5,
+            pady=5
+        )
+
+        self.frame_pitch_buttons = CTkFrame(
+            self.frame_pitch,
+            fg_color='transparent'
+        )
+        self.frame_pitch_buttons.grid(
+            row=1,
+            column=3,
+            padx=5,
+            pady=10
+        )
+
+
+        self.octive_entry = CTkEntry(
+            self.frame_pitch,    
+            placeholder_text='Octive',
+            placeholder_text_color='grey',
+            width=80,
+            height=10,
+            fg_color='dark blue',
+            justify='center'
+        )
+        self.octive_entry.grid(
+            row=1,
+            column=0
+        )
+       
+        self.letter_entry = CTkEntry(
+            self.frame_pitch,    
+            placeholder_text='Note Name',
+            placeholder_text_color='grey',
+            width=80,
+            height=10,
+            fg_color='dark blue',
+            justify='center'
+        )
+        self.letter_entry.grid(
+            row=1,
+            column=2
+        )
+
+        CTkButton(
+            self.frame_pitch_buttons,
+            text='Change Pitch',
+            font=('Helvetica', 18),
+            width=0,
+            command=self.change_pitch_clicked
+        ).grid(
+            row=3,
+            column=0
+        )
+
+        CTkButton(
+            self.frame_pitch_buttons,
+            text='▲',
+            font=('Helvetica', 25),
+            width=0,
+            command=self.increment_pitch_clicked
+        ).grid(
+            row=0,
+            column=0
+        )
+        CTkButton(
+            self.frame_pitch_buttons,
+            text='▼',
+            font=('Helvetica', 25),
+            width=0,
+            command=self.decrement_pitch_clicked
+        ).grid(
+            row=1,
+            column=0
+        )
+        #------------------------------Key Grouping------------------------------#
+        self.frame_key = CTkFrame(
+            self.frame_settings,
+        )
+        self.frame_key.grid(
+            row=7,
+            column=0,
+            sticky='NEW',
+            padx=10,
+            pady=10
+        )
+
+        self.frame_key.grid_columnconfigure((0,1), weight=1)
+        CTkLabel(
+            self.frame_key, 
+            text='Change key', 
+            font=('Helvetica', 18, 'bold')
+        ).grid(
+            row=0,
+            column=0,
+            columnspan=2,
+            sticky='NEW',
+            padx=5,
+            pady=(5,0)
+        )
+        CTkLabel(
+            self.frame_key, 
+            text='(without moving the notes)', 
+            font=('Helvetica', 12),
+            text_color='grey'
+        ).grid(
+            row=1,
+            column=0,
+            columnspan=2,
+            sticky='NEW',
+            padx=5,
+            pady=(0,5)
+        )
+        self.dropdown_keys = CTkOptionMenu(
+            self.frame_key,
+            values=self.minor_keys,
+            command=self.keys_clicked,
+            variable=self.var_keys
+        )
+        self.dropdown_keys.grid(
+            row=2,
+            column=0,
+            padx=5,
+            pady=10
+        )
+        self.dropdown_keys_mode = CTkOptionMenu(
+            self.frame_key,
+            values=('minor', 'major'),
+            command=self.keys_mode_clicked,
+            variable=self.var_mode_keys
+        )
+        self.dropdown_keys_mode.grid(
+            row=2,
+            column=1,
+            padx=5,
+            pady=10
+        )
+        
+        #----------------------------Transpose Grouping---------------------------#
+        self.frame_transpose = CTkFrame(
+            self.frame_settings,
+        )
+        self.frame_transpose.grid(
+            row=8,
+            column=0,
+            sticky='NEW',
+            padx=10,
+            pady=10
+        )
+
+        self.frame_transpose.grid_columnconfigure((0,1,2), weight=1)
+        CTkLabel(
+            self.frame_transpose, 
+            text='Transpose', 
+            font=('Helvetica', 18, 'bold')
+        ).grid(
+            row=0,
+            column=0,
+            columnspan=3,
+            sticky='NEW',
+            padx=5,
+            pady=(5,0)
+        )
+        CTkLabel(
+            self.frame_transpose, 
+            text='(change key and move the notes)', 
+            font=('Helvetica', 12),
+            text_color='grey'
+        ).grid(
+            row=1,
+            column=0,
+            columnspan=3,
+            sticky='NEW',
+            padx=5,
+            pady=(0,5)
+        )
+        self.dropdown_transpose = CTkOptionMenu(
+            self.frame_transpose,
+            values=self.minor_keys,
+            command=self.transpose_clicked,
+            variable=self.var_transpose
+        )
+        self.dropdown_transpose.grid(
+            row=2,
+            column=0,
+            padx=5,
+            pady=10
+        )
+        self.dropdown_transpose_mode = CTkOptionMenu(
+            self.frame_transpose,
+            values=('minor', 'major'),
+            command=self.transpose_mode_clicked,
+            variable=self.var_transpose_mode
+        )
+        self.dropdown_transpose_mode.grid(
+            row=2,
+            column=1,
+            padx=5,
+            pady=10
+        )
+        self.frame_transpose_buttons = CTkFrame(
+            self.frame_transpose,
+        )
+        self.frame_transpose_buttons.grid(
+            row=2,
+            column=2,
+            padx=5,
+            pady=10
+        )
+        CTkButton(
+            self.frame_transpose_buttons,
+            text='▲',
+            font=('Helvetica', 25),
+            width=0,
+            command=self.increment_transpose
+        ).grid(
+            row=0,
+            column=0
+        )
+        CTkButton(
+            self.frame_transpose_buttons,
+            text='▼',
+            font=('Helvetica', 25),
+            width=0,
+            command=self.decrement_transpose
+        ).grid(
+            row=1,
+            column=0
+        )
+
+
   
     # Methods to handle increment and decrement of transpose
     def increment_transpose(self):
