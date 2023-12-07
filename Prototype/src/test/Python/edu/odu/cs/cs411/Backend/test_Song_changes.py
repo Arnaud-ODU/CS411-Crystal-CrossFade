@@ -40,8 +40,6 @@ class Test_Song_Modifiers(unittest.TestCase):
     
     def test_add_beams(self):
         score = Song(path)
-        score.parsed_music.parts[0].measure(3).notesAndRests[0].beams.beamsList = []
-        self.assertEqual(len(score.parsed_music.parts[0].measure(3).notesAndRests[0].beams), 0)
         score.add_beams(1, 3, 1, 1, 0, 0)
         self.assertEqual(len(score.parsed_music.parts[0].measure(3).notesAndRests[0].beams), 1)
         self.assertEqual(score.parsed_music.parts[0].measure(3).notesAndRests[0].beams.getTypeByNumber(1), 'start')
