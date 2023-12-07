@@ -25,6 +25,7 @@ sys.path.append('Prototype/src/main/Python/edu/odu/cs/cs411/Backend')
 # Import a module from the custom paths
 from Backend.parseMusicXML import parsemusic_XML
 from Backend.Song import *
+from trainer import *
 
 # Define the main application class
 class App(CTkToplevel):
@@ -1882,6 +1883,7 @@ class App(CTkToplevel):
     def correct_beam_clicked(self):
         """Uses AI To Determine Likely Errors In Beams"""
         #MARKER
+        trainer.front_to_trainer()
         mark_error(self, part, measure, note, error_number)
         pass
 
