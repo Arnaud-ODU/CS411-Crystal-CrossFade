@@ -62,8 +62,7 @@ def parse_musicxml(file_path):
                  note_withType.append(collection_features[i])
     for i in range(len(note_withType)):
          del note_withType[i][3]   
-    return note_withType
-    return collection_features  # Return value to be used in Dataset class
+    return note_withType # Return value to be used in Dataset class
 
 class MusicXMLDataset(Dataset):
     def __init__(self, directory):
