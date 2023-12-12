@@ -2,7 +2,7 @@
 |:------------------------------|:-------------------|
 |Arnaud Blay                    | <ablay001@odu.edu> |
 |Hyacinth Abad / habad002       | <habad002@odu.edu> |
-|Dylan Hopper                   | <dhopp001@odu.edu> |
+|Dylan Hopper / Mudpill         | <dhopp001@odu.edu> |
 |Virginia Vano Ruano            | <vvano001@odu.edu> |
 |Joey Wassel                    | <jwass002@odu.edu> |
 |Selai Naim                     | <snaim001@odu.edu> |
