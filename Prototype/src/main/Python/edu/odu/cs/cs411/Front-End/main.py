@@ -25,6 +25,7 @@ sys.path.append('Prototype/src/main/Python/edu/odu/cs/cs411/Backend')
 # Import a module from the custom paths
 from Backend.parseMusicXML import parsemusic_XML
 from Backend.Song import *
+from trainer import front_ToTrainer
 
 # Define the main application class
 class App(CTkToplevel):
@@ -1882,7 +1883,14 @@ class App(CTkToplevel):
     def correct_beam_clicked(self):
         """Uses AI To Determine Likely Errors In Beams"""
         #MARKER
-        pass
+        index = self.song.path.rfind("/")
+
+        temp_list = front_ToTrainer(self.song.path, self.song.path[:index])
+        i = 1
+        for x in temp_list:
+            self.song.mark_error(int(x[0]), int(x[1]), int(x[2]), i)
+            i+=1
+        self.display()
 
 
     # Method to maximize the window
